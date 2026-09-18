@@ -1,0 +1,16 @@
+{
+	"compatibility_date": "2025-10-08",
+	"main": "src/index.ts",
+	"name": "copart-garaged1",
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "5549ca5b-4841-458f-91f5-d85381d56855",
+			"database_name": "copart-garage"
+		}
+	],
+	"observability": {
+		"enabled": true
+	}
+}
