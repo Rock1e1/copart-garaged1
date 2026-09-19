@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Copart Garage · ERP</title>
+<meta name="theme-color" content="#16305c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Copart Garage">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<style>
+  :root{
+    --navy:#1f3d73;--navy-2:#16305c;--red:#c8102e;--uablue:#0057b7;--uayellow:#ffd700;
+    --concrete:#eceef2;--surface:#ffffff;--ink:#191b1e;--muted:#6b7078;--line:#dde0e4;
+    --green:#2f8f5b;--green-bg:#e7f4ec;--amber:#e8952a;--steel:#41616f;
+    --accent:var(--navy);
+    --sans:'Archivo',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  body[data-accent="red"]{--accent:var(--red)}
+  body[data-accent="blue"]{--accent:var(--uablue)}
+  body[data-accent="green"]{--accent:var(--green)}
+  body[data-theme="dark"]{--concrete:#14161a;--surface:#1d2026;--ink:#e8eaed;--muted:#9aa0a8;--line:#2b2f36;--green-bg:#17301f}
+  body[data-bg="soft"]{background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--concrete);display:flex;font-size:15px}
+
+  .rail{width:236px;flex-shrink:0;background:var(--navy-2);color:#c7d2e6;display:flex;flex-direction:column;padding:20px 13px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;flex-direction:column;gap:8px;padding:4px 6px 18px}
+  .brandlogo{width:100%;display:block;background:#fff;border-radius:12px;padding:11px 13px}
+  .brandcap{font-size:10.5px;color:#8fa0bd;font-weight:700;letter-spacing:.06em;padding-left:4px}
+  .brand .car{width:38px;height:38px;flex-shrink:0}
+  .brand .txt b{display:block;color:#fff;font-weight:800;font-size:16px;line-height:1;letter-spacing:-.01em}
+  .brand .txt b i{font-style:normal;background:linear-gradient(90deg,var(--uablue),var(--uayellow));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand .txt span{font-size:10.5px;color:#8fa0bd;font-weight:600;letter-spacing:.04em}
+  .nav{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+  .nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;color:#a7b4c9;text-decoration:none;font-weight:500;cursor:pointer;font-size:14.5px}
+  .nav a svg{width:18px;height:18px;stroke-width:1.8;flex-shrink:0}
+  .nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav a.on{background:#fff;color:var(--navy-2);font-weight:700}
+  .rail .foot{margin-top:auto;padding:10px 12px;font-size:11px;color:#7d8aa3;line-height:1.5}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--uayellow);margin-right:6px}
+
+  main{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--line);flex-shrink:0}
+  .topbar h1{font-size:19px;font-weight:800;letter-spacing:-.015em;flex-shrink:0}
+  .search{flex:1;max-width:400px;display:flex;align-items:center;gap:9px;background:var(--concrete);border:1px solid transparent;border-radius:10px;padding:9px 13px}
+  .search:focus-within{border-color:var(--accent);background:var(--surface)}
+  .search svg{width:17px;height:17px;color:var(--muted);flex-shrink:0}
+  .search input{border:0;background:transparent;outline:none;font-family:inherit;font-size:14.5px;width:100%;color:var(--ink)}
+  .spacer{flex:1}
+  .icobtn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--ink);flex-shrink:0}
+  .icobtn:hover{border-color:var(--accent)}
+  .icobtn svg{width:19px;height:19px;stroke-width:1.9}
+  .btn{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border-radius:10px;padding:10px 16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+  .btn svg{width:16px;height:16px;stroke-width:2}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.sm{padding:7px 12px;font-size:13px}
+
+  .scroll{overflow-y:auto;padding:24px;flex:1}
+  .view{display:none}
+  .view.on{display:block;animation:in .22s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .eyebrow{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px}
+  .rowhead{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .rowhead .eyebrow{margin:0}
+
+  .cluster{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+  @media(max-width:1050px){.cluster{grid-template-columns:repeat(2,1fr)}}
+  .gauge{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden}
+  .gauge::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+  .gauge.green::before{background:var(--green)}.gauge.amber::before{background:var(--amber)}.gauge.red::before{background:var(--red)}
+  .gauge .lbl{font-size:12.5px;color:var(--muted);font-weight:500;margin-bottom:9px}
+  .gauge .num{font-family:var(--mono);font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1}
+  .gauge .unit{font-size:13px;color:var(--muted);margin-left:3px}
+  .gauge .sub{font-size:12px;color:var(--muted);margin-top:7px}
+
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+  @media(max-width:920px){.cols2{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:15px;font-weight:700;margin-bottom:2px}
+  .card .hint{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .barrow{display:grid;grid-template-columns:120px 1fr 110px;align-items:center;gap:12px;padding:7px 0}
+  .barrow .nm{font-size:13.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .track{height:9px;background:var(--concrete);border-radius:5px;overflow:hidden}
+  .fill{height:100%;border-radius:5px;background:var(--green)}.fill.neg{background:var(--red)}.fill.acc{background:var(--accent)}
+  .barrow .val{font-family:var(--mono);font-size:13px;text-align:right;font-weight:500}.barrow .val.neg{color:var(--red)}
+  .statline{display:flex;align-items:center;gap:11px;padding:9px 0;font-size:14px}
+  .statline .sw{width:11px;height:11px;border-radius:3px;flex-shrink:0}.statline .c{margin-left:auto;font-family:var(--mono);font-weight:600}
+
+  .filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px}
+  .chip{font-family:inherit;font-size:13.5px;padding:8px 14px;border-radius:20px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-weight:500}
+  .chip.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+  .parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
+  .part{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:box-shadow .15s,transform .15s}
+  .part:hover{box-shadow:0 8px 22px rgba(20,22,25,.09);transform:translateY(-2px)}
+  .photo{aspect-ratio:4/3;background:linear-gradient(135deg,#e9ebef,#dfe2e7);display:grid;place-items:center;position:relative}
+  body[data-theme="dark"] .photo{background:linear-gradient(135deg,#242830,#1c1f25)}
+  .photo>svg{width:50px;height:50px;color:#a9afb8;stroke-width:1.3}
+  .photo .price{position:absolute;right:9px;bottom:9px;background:rgba(26,28,31,.92);color:#fff;font-family:var(--mono);font-size:13px;font-weight:600;padding:5px 9px;border-radius:8px}
+  .photo .qty{position:absolute;left:9px;top:9px;background:var(--uablue);color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:7px}
+  .part .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .part .nm{font-weight:600;font-size:14.5px;line-height:1.25}
+  .part .don{font-size:12.5px;color:var(--muted)}
+  .part .meta{display:flex;align-items:center;gap:7px;margin-top:auto;flex-wrap:wrap}
+  .loc{font-family:var(--mono);font-size:11.5px;color:var(--steel);background:#eef2f4;padding:2px 7px;border-radius:6px}
+  body[data-theme="dark"] .loc{background:#26303a}
+  .badge{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px}
+  .b-stock{background:var(--green-bg);color:var(--green)}.b-sold{background:#eceef1;color:#7c828b}
+  .b-univ{background:#e9f0f4;color:var(--steel)}.b-none{background:#fdece9;color:var(--red)}
+  body[data-theme="dark"] .b-sold{background:#2a2e35;color:#9aa0a8}body[data-theme="dark"] .b-univ{background:#22303a}
+
+  .donor{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;display:grid;grid-template-columns:1fr repeat(3,120px);gap:14px;align-items:center;margin-bottom:11px}
+  @media(max-width:820px){.donor{grid-template-columns:1fr 1fr}}
+  .donor .title{font-weight:700;font-size:15px}.donor .vin{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:3px}
+  .donor .fig{text-align:right}.donor .fig .k{font-size:11px;color:var(--muted);margin-bottom:3px}
+  .donor .fig .v{font-family:var(--mono);font-weight:600;font-size:15px}.donor .v.pos{color:var(--green)}.donor .v.negv{color:var(--red)}
+
+  .otable{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .orow{display:grid;grid-template-columns:92px 1fr 70px 96px 110px 118px;gap:12px;padding:14px 18px;align-items:center;border-bottom:1px solid var(--line);font-size:14px}
+  .orow:last-child{border:0}.orow.head{background:var(--concrete);font-size:12px;color:var(--muted);font-weight:600}
+  .orow .oid{font-family:var(--mono);font-weight:600}.orow .osum{font-family:var(--mono);font-weight:600}
+
+  .modal{position:fixed;inset:0;background:rgba(15,18,24,.55);display:none;place-items:center;padding:18px;z-index:60}
+  .modal.on{display:grid}
+  .sheet-m{background:var(--surface);border-radius:16px;width:100%;max-width:480px;padding:24px;max-height:92vh;overflow:auto}
+  .sheet-m.wide{max-width:760px}
+  .sheet-m h2{font-size:18px;font-weight:800;margin-bottom:4px}
+  .sheet-m p.h{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .fld{margin-bottom:13px}
+  .fld label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .fld input,.fld select,.fld textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14.5px;background:var(--concrete);color:var(--ink)}
+  .fld textarea{resize:vertical;min-height:64px}
+  .fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+  .mact{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .seg button{flex:1;border:0;background:var(--surface);padding:10px 8px;cursor:pointer;font-size:14px;font-family:inherit;color:var(--muted)}
+  .seg button.on{background:var(--ink);color:var(--surface);font-weight:600}
+  .empty{text-align:center;color:var(--muted);padding:44px 20px;font-size:14.5px}
+  .banner{padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:13.5px;font-weight:500;display:none}
+  .banner.load{display:block;background:#eef2f4;color:var(--steel)}
+  body[data-theme="dark"] .banner.load{background:#22303a}
+  .banner.err{display:block;background:#fdece9;color:var(--red)}
+  .photozone{border:1.5px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--muted);font-size:13px;cursor:pointer;background:var(--concrete)}
+  .photozone.has{padding:0;border-style:solid;overflow:hidden}
+  .photozone.has span{display:none}
+  .photozone img{width:100%;max-height:200px;object-fit:cover;display:block}
+  .donor{cursor:pointer}
+  .orow[data-id]{cursor:pointer}
+  .drawer .dphoto img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+  .tk{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:14px;margin-bottom:10px}
+  .tk .tinfo{flex:1;min-width:0}
+  .tk .tt{font-weight:600;font-size:14.5px}
+  .tk .tm{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .tk select{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:inherit;font-size:13px;background:var(--concrete);color:var(--ink);cursor:pointer}
+  .tk .tx{color:var(--red);cursor:pointer;font-weight:700;padding:4px 8px}
+
+  .ob{display:grid;grid-template-columns:1fr 300px;gap:16px}
+  @media(max-width:760px){.ob{grid-template-columns:1fr}}
+  .obcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .picklist{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+  .pick{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13.5px}
+  .pick:last-child{border:0}.pick:hover{background:var(--concrete)}
+  .pick .pp{margin-left:auto;font-family:var(--mono);color:var(--muted)}
+  .pos{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .pos:last-child{border:0}
+  .pos .qn{width:52px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-family:var(--mono);text-align:center;background:var(--concrete);color:var(--ink)}
+  .pos .x{margin-left:auto;color:var(--red);cursor:pointer;font-weight:700;padding:2px 8px}
+  .postotal{display:flex;justify-content:space-between;font-weight:700;padding-top:10px;font-size:15px}
+  .postotal span:last-child{font-family:var(--mono)}
+
+  .scanbox{max-width:520px;margin:0 auto}
+  .scaninput{display:flex;gap:10px;margin-bottom:14px}
+  .scaninput input{flex:1;font-family:var(--mono);font-size:18px;letter-spacing:.04em;padding:14px 16px;border:2px solid var(--accent);border-radius:12px;background:var(--surface);color:var(--ink);outline:none}
+  #reader{border-radius:12px;overflow:hidden;margin-bottom:12px}
+  .scanhint{text-align:center;color:var(--muted);font-size:13.5px;line-height:1.6}
+
+  .pr{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:12px}
+  .pr .top{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  .pr .top .nm{font-weight:700;font-size:15px}
+  .pr .top .sales{margin-left:auto;font-size:12.5px;color:var(--muted)}
+  .pr .top .sales b{font-family:var(--mono);color:var(--ink)}
+  .pr .grid{display:grid;grid-template-columns:repeat(3,1fr) 150px;gap:12px;align-items:end}
+  @media(max-width:720px){.pr .grid{grid-template-columns:1fr 1fr}}
+  .pr .grid label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:5px}
+  .pr .grid input{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);background:var(--concrete);color:var(--ink)}
+  .pr .total{text-align:right}.pr .total .k{font-size:12px;color:var(--muted)}.pr .total .v{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--green)}
+  .monthpick{padding:8px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:var(--surface);color:var(--ink)}
+
+  .swatch{width:30px;height:30px;border-radius:8px;cursor:pointer;border:2px solid transparent}
+  .swatch.on{border-color:var(--ink)}
+  .btn.danger{color:var(--red);border-color:#f0c9c2}
+  .btn.full{width:100%;justify-content:center}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .drawer-ov{position:fixed;inset:0;background:rgba(15,18,24,.4);opacity:0;pointer-events:none;transition:opacity .2s;z-index:55}
+  .drawer-ov.on{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:380px;max-width:92vw;background:var(--surface);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);z-index:56;display:flex;flex-direction:column}
+  .drawer.on{transform:none}
+  .drawer .dh{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .drawer .dh h2{font-size:17px;font-weight:800;flex:1;line-height:1.2}
+  .drawer .dbody{padding:18px 20px;overflow:auto;flex:1}
+  .drawer .dphoto{aspect-ratio:16/10;border-radius:12px;background:linear-gradient(135deg,#e9ebef,#dfe2e7);display:grid;place-items:center;margin-bottom:16px}
+  body[data-theme="dark"] .drawer .dphoto{background:linear-gradient(135deg,#242830,#1c1f25)}
+  .drawer .drow{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .drawer .drow .k{color:var(--muted)}
+  .drawer .drow .v{font-weight:600;text-align:right}
+  .drawer .dactions{padding:16px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+
+  /* thumbnails on cards */
+  .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .donor .dthumb{width:56px;height:42px;border-radius:8px;object-fit:cover;flex-shrink:0}
+  .donor .dmain{display:flex;align-items:center;gap:12px;min-width:0}
+
+  /* media gallery */
+  .mediastrip{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px;margin-top:9px}
+  .mitem{position:relative;aspect-ratio:1;border-radius:9px;overflow:hidden;background:var(--concrete);border:1px solid var(--line)}
+  .mitem img,.mitem video{width:100%;height:100%;object-fit:cover;display:block}
+  .mitem .mdel{position:absolute;top:3px;right:3px;background:rgba(15,18,24,.78);color:#fff;border-radius:6px;width:20px;height:20px;display:grid;place-items:center;font-size:12px;cursor:pointer;font-weight:700;line-height:1}
+  .mitem .vbadge{position:absolute;left:4px;bottom:4px;background:rgba(15,18,24,.8);color:#fff;font-size:9.5px;font-weight:700;padding:2px 5px;border-radius:5px}
+  .drawer .mediastrip{grid-template-columns:repeat(3,1fr);margin-bottom:16px}
+  .mediabtns{display:flex;gap:8px;margin-top:8px}
+  .mediabtns .btn{flex:1;justify-content:center;font-size:13px;padding:9px 10px}
+
+  /* input + button row (scanner near a field) */
+  .inpbtn{display:flex;gap:8px}
+  .inpbtn input{flex:1}
+  .inpbtn .ib{width:44px;flex-shrink:0;border:1px solid var(--line);background:var(--concrete);border-radius:9px;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+  .inpbtn .ib:hover{border-color:var(--accent)}
+  .inpbtn .ib svg{width:19px;height:19px;stroke-width:1.9}
+
+  /* filter bar */
+  .fbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .fsel{padding:8px 12px;border:1px solid var(--line);border-radius:9px;font-family:inherit;font-size:13.5px;background:var(--surface);color:var(--ink);cursor:pointer;max-width:200px}
+  .fclear{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;padding:6px}
+  .fcount{font-size:12.5px;color:var(--muted);margin-left:auto}
+  .vsearch{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 13px;margin-bottom:12px}
+  .vsearch:focus-within{border-color:var(--accent)}
+  .vsearch svg{width:17px;height:17px;color:var(--muted);flex-shrink:0}
+  .vsearch input{border:0;background:transparent;outline:none;font-family:inherit;font-size:14.5px;width:100%;color:var(--ink)}
+
+  /* discounts */
+  .pos .dn{width:64px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-family:var(--mono);text-align:center;background:var(--concrete);color:var(--ink);font-size:12.5px}
+  .pos .plines{min-width:0;flex:1}
+  .posdisc{font-size:11px;color:var(--green);font-weight:600}
+  .totline{display:flex;justify-content:space-between;font-size:13.5px;padding:3px 0;color:var(--muted)}
+  .totline span:last-child{font-family:var(--mono)}
+  .disc-row{display:flex;gap:8px;align-items:center;margin-top:10px}
+  .disc-row input{flex:1;padding:8px 11px;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);background:var(--concrete);color:var(--ink);font-size:13.5px}
+  .disc-row .seg{width:88px;flex-shrink:0}
+  .disc-row .seg button{padding:8px 4px;font-size:13px}
+
+  /* ═══════════════════════════════════════════════════
+     MOBILE  ≤ 680px  —  bottom tab bar layout
+     ═══════════════════════════════════════════════════ */
+  .tabbar,.more-panel{display:none}
+
+  @media(max-width:680px){
+    /* ── root layout ── */
+    .rail{display:none!important}
+    body{display:block;overflow:hidden;height:100dvh}
+    main{
+      width:100%;height:100dvh;
+      padding-bottom:calc(58px + env(safe-area-inset-bottom,0px));
+      overflow:hidden;display:flex;flex-direction:column;
+    }
+
+    /* ── topbar ── */
+    .topbar{padding:10px 14px;gap:10px}
+    .topbar h1{font-size:17px}
+    .search{display:none}
+    .mlogo{display:block!important;height:26px;width:auto;flex-shrink:0}
+    .fbar{gap:7px;margin-bottom:11px}
+    .fsel{font-size:13px;padding:7px 10px;max-width:46vw}
+    .mediabtns{flex-direction:column}
+    .drawer .mediastrip{grid-template-columns:repeat(3,1fr)}
+
+    /* ── FAB — floating «+» button ── */
+    #addBtn{
+      position:fixed;right:14px;
+      bottom:calc(70px + env(safe-area-inset-bottom,0px));
+      z-index:51;width:52px;height:52px;padding:0;
+      border-radius:50%;justify-content:center;
+      box-shadow:0 4px 20px rgba(20,22,25,.28);
+    }
+    #addBtn svg{width:22px;height:22px}
+    #addBtnTxt{display:none}
+
+    /* ── scroll area ── */
+    .scroll{padding:12px 12px 16px}
+
+    /* ── KPI cluster: 2×2 ── */
+    .cluster{grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+    .gauge{padding:12px 14px}
+    .gauge .lbl{font-size:11.5px;margin-bottom:7px}
+    .gauge .num{font-size:19px}
+    .gauge .sub{font-size:11px}
+    .cols2{grid-template-columns:1fr}
+    .barrow{grid-template-columns:90px 1fr 78px;gap:8px}
+    .barrow .nm{font-size:12.5px}
+
+    /* ── Parts grid: 2 cols ── */
+    .parts{grid-template-columns:repeat(2,1fr);gap:8px}
+    .part .nm{font-size:13px;line-height:1.2}
+    .part .don{font-size:11.5px}
+    .photo .price{font-size:11px;padding:4px 7px}
+    .photo>svg{width:36px;height:36px}
+    .part .body{padding:9px 11px 11px}
+
+    /* ── Donors ── */
+    .donor{grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px}
+
+    /* ── Orders → card layout ── */
+    .otable{border-radius:12px}
+    .orow.head{display:none!important}
+    .orow[data-id]{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:3px 8px;
+      padding:12px 14px;
+      border-radius:0;
+    }
+    .orow[data-id]>div:nth-child(1){grid-column:1;grid-row:1}
+    .orow[data-id]>div:nth-child(6){grid-column:2;grid-row:1/4;display:flex;align-items:center}
+    .orow[data-id]>div:nth-child(2){grid-column:1;grid-row:2;font-size:13px;color:var(--muted)}
+    .orow[data-id]>div:nth-child(4){grid-column:1;grid-row:3;font-family:var(--mono);font-weight:700;font-size:14px}
+    .orow[data-id]>div:nth-child(3),.orow[data-id]>div:nth-child(5){display:none}
+
+    /* ── Payroll ── */
+    .pr .grid{grid-template-columns:1fr 1fr}
+
+    /* ── Form row cols ── */
+    .row3{grid-template-columns:1fr 1fr}
+
+    /* ── Modal → bottom sheet ── */
+    .modal{padding:0;align-items:flex-end}
+    .modal.on{display:flex;flex-direction:column;justify-content:flex-end}
+    .sheet-m{
+      width:100%;max-width:100%;
+      border-radius:22px 22px 0 0;
+      max-height:91dvh;
+      padding:0 18px calc(24px + env(safe-area-inset-bottom,0px));
+    }
+    .sheet-m::before{
+      content:"";display:block;width:38px;height:4px;border-radius:2px;
+      background:var(--line);margin:14px auto 12px;flex-shrink:0;
+    }
+    .sheet-m.wide{max-width:100%}
+    .ob{grid-template-columns:1fr}
+
+    /* ── Drawer → bottom panel ── */
+    .drawer{
+      width:100%;border-left:0;
+      top:auto;bottom:0;
+      height:90dvh;
+      border-radius:22px 22px 0 0;
+      border-top:1px solid var(--line);
+      transform:translateY(100%);
+    }
+    .drawer.on{transform:none}
+    .drawer .dh{position:relative;padding-top:22px;padding-left:16px;padding-right:16px}
+    .drawer .dh::before{
+      content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);
+      width:38px;height:4px;border-radius:2px;background:var(--line);
+    }
+
+    /* ── Tab bar ── */
+    .tabbar{
+      display:flex;
+      position:fixed;bottom:0;left:0;right:0;
+      height:calc(58px + env(safe-area-inset-bottom,0px));
+      padding-bottom:env(safe-area-inset-bottom,0px);
+      background:var(--surface);
+      border-top:1px solid var(--line);
+      z-index:50;
+    }
+    .tabbar a{
+      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:3px;color:var(--muted);text-decoration:none;cursor:pointer;
+      font-size:10px;font-weight:600;letter-spacing:.01em;
+      -webkit-tap-highlight-color:transparent;user-select:none;transition:color .1s;
+    }
+    .tabbar a svg{width:22px;height:22px;stroke-width:1.8;flex-shrink:0;transition:stroke .1s}
+    .tabbar a.on{color:var(--accent)}
+    .tabbar a.on svg{stroke:var(--accent)}
+
+    /* ── More panel ── */
+    .more-panel{
+      display:block;
+      position:fixed;left:0;right:0;
+      bottom:calc(58px + env(safe-area-inset-bottom,0px));
+      background:var(--surface);
+      border-radius:18px 18px 0 0;
+      border:1px solid var(--line);border-bottom:0;
+      z-index:49;
+      transform:translateY(calc(100% + 2px));
+      transition:transform .22s cubic-bezier(.4,0,.2,1);
+      box-shadow:0 -6px 24px rgba(15,18,24,.12);
+    }
+    .more-panel::before{
+      content:"";display:block;width:38px;height:4px;border-radius:2px;
+      background:var(--line);margin:12px auto 10px;
+    }
+    .more-panel.on{transform:none}
+    .more-panel a{
+      display:flex;align-items:center;gap:15px;padding:14px 22px;
+      color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;
+      border-bottom:1px solid var(--line);cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .more-panel a:last-child{border:0}
+    .more-panel a svg{width:20px;height:20px;stroke-width:1.7;color:var(--muted);flex-shrink:0}
+  }
+</style>
+</head>
+<body data-theme="light" data-accent="navy" data-bg="plain">
+
+<aside class="rail">
+  <div class="brand">
+    <img src="logo.png" alt="Copart Garage" class="brandlogo" id="brandLogo" onerror="logoFallback(this)">
+    <span class="brandcap">ERP · ОБЛІК</span>
+  </div>
+  <nav class="nav" id="nav">
+    <a data-view="dash" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Огляд</a>
+    <a data-view="parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>Деталі</a>
+    <a data-view="donors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 17h2l.64-2.54a6 6 0 00-.42-4.36l-1.35-2.87A3 3 0 0016.79 5H7.21a3 3 0 00-2.68 1.66L3.18 9.4A6 6 0 002.76 14.4L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>Донори</a>
+    <a data-view="orders"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>Замовлення</a>
+    <a data-view="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg>Сканер</a>
+    <a data-view="pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="7" cy="15" r="1"/></svg>Розрахунок ЗП</a>
+    <a data-view="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Завдання</a>
+  </nav>
+  <div class="foot"><span class="dot"></span><span id="modeTxt">Локальні дані</span></div>
+</aside>
+
+<main>
+  <div class="topbar">
+    <img src="logo.png" alt="" class="mlogo" id="mLogo" style="display:none" onerror="this.style.display='none'">
+    <h1 id="ttl">Огляд</h1>
+    <div class="search" id="searchWrap" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" placeholder="Пошук деталі, донора, місця…">
+    </div>
+    <div class="spacer"></div>
+    <button class="btn primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg><span id="addBtnTxt">Додати деталь</span></button>
+    <button class="icobtn" id="gearBtn" title="Налаштування"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+  </div>
+
+  <div class="scroll">
+    <div class="banner" id="banner"></div>
+    <section class="view on" id="view-dash">
+      <div class="cluster" id="cluster"></div>
+      <div class="cluster" id="cluster2"></div>
+      <div class="cols2">
+        <div class="card"><h3>Прибуток по донорах</h3><div class="hint">Продано мінус собівартість авто.</div><div id="profitBars"></div></div>
+        <div class="card"><h3>Продажі по працівниках</h3><div class="hint">За поточний місяць.</div><div id="workerBars"></div></div>
+      </div>
+      <div class="cols2">
+        <div class="card"><h3>Топ категорій за виручкою</h3><div class="hint">Що приносить найбільше грошей.</div><div id="catBars"></div></div>
+        <div class="card"><h3>Замовлення за статусом</h3><div class="hint">Скільки де «зависло».</div><div id="orderStatus"></div></div>
+      </div>
+      <div class="cols2">
+        <div class="card"><h3>Стан складу</h3><div class="hint">Розподіл деталей за статусом.</div><div id="statusList"></div></div>
+        <div class="card"><h3>ТОП донори за прибутком</h3><div class="hint">Найвигідніші авто.</div><div id="topDonors"></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-parts">
+      <div class="vsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="pSearch" placeholder="Пошук: назва, донор, VIN, Win-Code, місце, barcode, дефекти…"></div>
+      <div class="filters" id="statusFilters"></div>
+      <div class="filters" id="catFilters"></div>
+      <div class="fbar">
+        <select class="fsel" id="pfDonor"></select>
+        <select class="fsel" id="pfCond"></select>
+        <select class="fsel" id="pfLoc"></select>
+        <select class="fsel" id="pfSort"><option value="new">Спершу нові</option><option value="name">За назвою</option><option value="price-">Ціна ↓</option><option value="price+">Ціна ↑</option></select>
+        <span class="fclear" id="pfClear">Скинути</span>
+        <span class="fcount" id="pfCount"></span>
+      </div>
+      <div class="parts" id="partsGrid"></div>
+    </section>
+
+    <section class="view" id="view-donors">
+      <div class="rowhead"><div class="eyebrow">Авто-джерела та їхня економіка</div></div>
+      <div class="vsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="dSearch" placeholder="Пошук: марка, модель, VIN, лот, двигун, колір…"></div>
+      <div class="fbar">
+        <select class="fsel" id="dfStatus"></select>
+        <select class="fsel" id="dfAuction"></select>
+        <select class="fsel" id="dfMake"></select>
+        <select class="fsel" id="dfSort"><option value="new">Спершу нові</option><option value="profit-">Прибуток ↓</option><option value="profit+">Прибуток ↑</option><option value="name">За назвою</option></select>
+        <span class="fclear" id="dfClear">Скинути</span>
+        <span class="fcount" id="dfCount"></span>
+      </div>
+      <div id="donorList"></div>
+    </section>
+
+    <section class="view" id="view-orders">
+      <div class="rowhead"><div class="eyebrow">Замовлення</div><div class="spacer"></div><button class="btn primary sm" id="newOrderBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Нове замовлення</button></div>
+      <div class="vsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="oSearch" placeholder="Пошук: №, клієнт, телефон, місто, ТТН, деталь, коментар…"></div>
+      <div class="filters" id="oTrkFilters"></div>
+      <div class="fbar">
+        <select class="fsel" id="ofDelivery"></select>
+        <select class="fsel" id="ofPay"></select>
+        <select class="fsel" id="ofSeller"></select>
+        <select class="fsel" id="ofSort"><option value="new">Спершу нові</option><option value="old">Спершу старі</option><option value="sum-">Сума ↓</option><option value="sum+">Сума ↑</option></select>
+        <span class="fclear" id="ofClear">Скинути</span>
+        <span class="fcount" id="ofCount"></span>
+      </div>
+      <div class="otable" id="orderTable"></div>
+    </section>
+
+    <section class="view" id="view-scan">
+      <div class="scanbox">
+        <div class="rowhead"><div class="eyebrow">Швидке додавання зі сканера</div></div>
+        <div class="scaninput">
+          <input id="scanCode" placeholder="Сканування місця / код…" autocomplete="off">
+          <button class="btn" id="camBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:18px;height:18px"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>Камера</button>
+        </div>
+        <div id="reader"></div>
+        <div class="scanhint">Наведи сканер або камеру на штрихкод місця зберігання — форма додавання відкриється з уже заповненим місцем. USB-сканер працює як клавіатура: просто скануй у полі вище.</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-pay">
+      <div class="rowhead"><div class="eyebrow">Розрахунок зарплати</div><input type="month" class="monthpick" id="payMonth"><div class="spacer"></div><button class="btn sm" id="addWorkerBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Працівник</button></div>
+      <div id="payList"></div>
+    </section>
+
+    <section class="view" id="view-tasks">
+      <div class="rowhead"><div class="eyebrow">Завдання для працівників</div><div class="spacer"></div><button class="btn primary sm" id="newTaskBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Нове завдання</button></div>
+      <div class="vsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="tSearch" placeholder="Пошук по завданнях…"></div>
+      <div class="fbar">
+        <select class="fsel" id="tfStatus"></select>
+        <select class="fsel" id="tfWorker"></select>
+        <span class="fclear" id="tfClear">Скинути</span>
+        <span class="fcount" id="tfCount"></span>
+      </div>
+      <div id="taskList"></div>
+    </section>
+  </div>
+</main>
+
+<!-- PART DRAWER -->
+<div class="drawer-ov" id="drawerOv"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh"><h2 id="dw-title">Деталь</h2><button class="icobtn" id="dw-close" style="width:34px;height:34px" title="Закрити"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+  <div class="dbody" id="dw-body"></div>
+  <div class="dactions" id="dw-actions"></div>
+</aside>
+
+<!-- MODALS -->
+<div class="modal" id="mPart"><div class="sheet-m">
+  <h2>Нова деталь</h2><p class="h">Так само, як заповнюватиме працівник із телефона.</p>
+  <div class="fld"><label>Назва</label><input id="pt-name" placeholder="Напр. Фара ліва"></div>
+  <div class="fld"><label>Тип обліку</label><div class="seg" id="pt-type"><button data-t="unique" class="on">Унікальна (з авто)</button><button data-t="universal">Універсальна</button></div></div>
+  <div class="fld" id="pt-donorWrap"><label>Донор</label><select id="pt-donor"></select></div>
+  <div class="row2"><div class="fld"><label>Категорія</label><select id="pt-cat"></select></div><div class="fld"><label>Win-Code / OEM</label><input id="pt-win" placeholder="каталожний №"></div></div>
+  <div class="fld" id="pt-qtyWrap" style="display:none"><label>Кількість на складі</label><input id="pt-qty" type="number" value="1"></div>
+  <div class="row2"><div class="fld"><label>Стан</label><select id="pt-cond"><option>Новий</option><option selected>Б/в відмінний</option><option>Робочий</option><option>Під відновлення</option></select></div><div class="fld"><label>Місце зберігання</label><div class="inpbtn"><input id="pt-loc" placeholder="A-01"><div class="ib" id="pt-locScan" title="Сканувати місце"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg></div></div></div></div>
+  <div class="fld"><label>Дефекти</label><textarea id="pt-def" placeholder="опис дефектів…"></textarea></div>
+  <div class="row2"><div class="fld"><label>Ціна продажу, ₴</label><input id="pt-price" type="number" placeholder="0"></div><div class="fld"><label>Barcode / штрихкод</label><div class="inpbtn"><input id="pt-barcode" placeholder="скан або код"><div class="ib" id="pt-barScan" title="Сканувати штрихкод"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14"/></svg></div></div></div></div>
+  <div class="fld"><label>Хто завантажив</label><select id="pt-loader"></select></div>
+  <div class="fld"><label>Головне фото</label><div class="photozone" id="pt-photozone"><span>Перетягни або клікни, щоб додати фото</span></div>
+    <div class="mediastrip" id="pt-mediastrip"></div>
+    <div class="mediabtns"><button type="button" class="btn sm" id="pt-addImgs">+ Ще фото</button><button type="button" class="btn sm" id="pt-addVid">+ Відео</button></div></div>
+  <div class="mact"><button class="btn" data-close>Скасувати</button><button class="btn primary" id="pt-save">Зберегти</button></div>
+</div></div>
+
+<div class="modal" id="mDonor"><div class="sheet-m">
+  <h2>Новий донор</h2><p class="h">Авто, яке розбирається на деталі.</p>
+  <div class="row3"><div class="fld"><label>Марка</label><input id="dn-make"></div><div class="fld"><label>Модель</label><input id="dn-model"></div><div class="fld"><label>Рік</label><input id="dn-year" type="number"></div></div>
+  <div class="fld"><label>VIN</label><input id="dn-vin"></div>
+  <div class="row2"><div class="fld"><label>Комплектація</label><input id="dn-trim"></div><div class="fld"><label>Двигун</label><input id="dn-engine" placeholder="напр. 2.0 TDI"></div></div>
+  <div class="row2"><div class="fld"><label>КПП</label><select id="dn-gearbox"><option>Автомат</option><option>Механіка</option><option>Робот</option><option>Варіатор</option></select></div><div class="fld"><label>Колір кузова</label><input id="dn-color"></div></div>
+  <div class="row2"><div class="fld"><label>Аукціон</label><select id="dn-auction"><option>Copart</option><option>IAAI</option><option>Інше</option></select></div><div class="fld"><label>Номер лоту</label><input id="dn-lot"></div></div>
+  <div class="row2"><div class="fld"><label>Дата покупки</label><input id="dn-date" type="date"></div><div class="fld"><label>Статус</label><select id="dn-status"><option>В дорозі</option><option>На розборці</option><option selected>Розібрано</option></select></div></div>
+  <div class="row3"><div class="fld"><label>Ціна покупки, $</label><input id="dn-buy" type="number"></div><div class="fld"><label>Доставка+мито, $</label><input id="dn-ship" type="number"></div><div class="fld"><label>Курс ₴/$</label><input id="dn-rate" type="number" value="41"></div></div>
+  <div class="fld"><label>Собівартість = (ціна + доставка) × курс</label><input id="dn-cost" disabled style="font-family:var(--mono);color:var(--muted)"></div>
+  <div class="fld"><label>Головне фото авто</label><div class="photozone" id="dn-photozone"><span>Перетягни або клікни, щоб додати фото</span></div>
+    <div class="mediastrip" id="dn-mediastrip"></div>
+    <div class="mediabtns"><button type="button" class="btn sm" id="dn-addImgs">+ Ще фото</button><button type="button" class="btn sm" id="dn-addVid">+ Відео</button></div></div>
+  <div class="mact"><button class="btn" data-close>Скасувати</button><button class="btn primary" id="dn-save">Зберегти</button></div>
+</div></div>
+
+<div class="modal" id="mOrder"><div class="sheet-m wide">
+  <h2>Нове замовлення</h2><p class="h">Обери донора й деталі, заповни клієнта та доставку.</p>
+  <div class="ob">
+    <div>
+      <div class="obcard" style="margin-bottom:14px">
+        <div class="row2" style="margin-bottom:10px">
+          <div class="fld" style="margin:0"><label>Фільтр за донором</label><select id="ob-donor"></select></div>
+          <div class="fld" style="margin:0"><label>Пошук деталі</label><input id="ob-search" placeholder="назва…"></div>
+        </div>
+        <div class="picklist" id="ob-picklist"></div>
+      </div>
+      <div class="obcard">
+        <div class="eyebrow" style="margin-bottom:10px">Позиції замовлення</div>
+        <div id="ob-positions"><div class="empty" style="padding:20px">Ще нема позицій. Обери деталь зі списку зліва.</div></div>
+        <div id="ob-totalBox" style="display:none">
+          <div class="totline"><span>Сума позицій</span><span id="ob-gross">0 ₴</span></div>
+          <div class="totline" id="ob-posDiscLine" style="display:none"><span>Знижки по позиціях</span><span id="ob-posDisc">0 ₴</span></div>
+          <div class="disc-row">
+            <input id="ob-disc" type="number" min="0" placeholder="Знижка на все замовлення">
+            <div class="seg" id="ob-discType"><button data-v="uah" class="on">₴</button><button data-v="pct">%</button></div>
+          </div>
+          <div class="totline" id="ob-ordDiscLine" style="display:none"><span>Знижка на замовлення</span><span id="ob-ordDisc">0 ₴</span></div>
+          <div class="postotal"><span>До сплати</span><span id="ob-sum">0 ₴</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="obcard">
+      <div class="fld"><label>Клієнт (ПІБ)</label><input id="ob-client"></div>
+      <div class="row2"><div class="fld"><label>Телефон</label><input id="ob-phone"></div><div class="fld"><label>Місто</label><input id="ob-city"></div></div>
+      <div class="fld"><label>Спосіб доставки</label><select id="ob-delivery"><option>Нова Пошта</option><option>Укрпошта</option><option>Meest</option><option>Justin</option><option>Delivery</option><option>САТ</option><option>Самовивіз</option><option>Інша</option></select></div>
+      <div class="fld" id="ob-deliveryOtherWrap" style="display:none"><label>Назва служби</label><input id="ob-deliveryOther" placeholder="інша служба доставки"></div>
+      <div class="fld"><label>Тип точки</label><div class="seg" id="ob-point"><button data-v="Відділення" class="on">Відділення</button><button data-v="Поштомат">Поштомат</button></div></div>
+      <div class="fld"><label id="ob-branchLbl">№ відділення / поштомата</label><input id="ob-branch" placeholder="напр. 12"></div>
+      <div class="fld"><label>Спосіб оплати</label><div class="seg" id="ob-pay"><button data-p="full" class="on">Повна оплата</button><button data-p="cod">Наложка</button></div></div>
+      <div class="fld" id="ob-prepayWrap" style="display:none"><label>Передоплата, ₴</label><input id="ob-prepay" type="number" placeholder="0"></div>
+      <div class="fld"><label>Хто продав</label><select id="ob-seller"></select></div>
+      <div class="fld"><label>Коментар (для нас)</label><textarea id="ob-comment" placeholder="нотатка до замовлення…"></textarea></div>
+      <button class="btn sm" id="ob-ttn" style="width:100%;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" style="width:16px;height:16px"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg><span id="ob-ttnTxt">Згенерувати ТТН</span></button>
+    </div>
+  </div>
+  <div class="mact"><button class="btn" data-close>Скасувати</button><button class="btn primary" id="ob-save">Створити замовлення</button></div>
+</div></div>
+
+<div class="modal" id="mSettings"><div class="sheet-m" style="max-width:420px">
+  <h2>Налаштування інтерфейсу</h2><p class="h">Зміни тему, колір і фон під себе.</p>
+  <div class="fld"><label>Тема</label><div class="seg" id="set-theme"><button data-v="light" class="on">Світла</button><button data-v="dark">Темна</button></div></div>
+  <div class="fld"><label>Колір акценту</label><div style="display:flex;gap:10px" id="set-accent">
+    <div class="swatch on" data-v="navy" style="background:#1f3d73"></div>
+    <div class="swatch" data-v="red" style="background:#c8102e"></div>
+    <div class="swatch" data-v="blue" style="background:#0057b7"></div>
+    <div class="swatch" data-v="green" style="background:#2f8f5b"></div>
+  </div></div>
+  <div class="fld"><label>Фон</label><div class="seg" id="set-bg"><button data-v="plain" class="on">Чистий</button><button data-v="soft">Візерунок</button></div></div>
+  <div class="mact"><button class="btn primary" data-close>Готово</button></div>
+</div></div>
+
+<div class="modal" id="mTask"><div class="sheet-m" style="max-width:440px">
+  <h2>Нове завдання</h2><p class="h">Постав завдання працівнику.</p>
+  <div class="fld"><label>Завдання</label><input id="tk-title-inp" placeholder="напр. Зняти двигун з Audi Q5"></div>
+  <div class="row2"><div class="fld"><label>Виконавець</label><select id="tk-worker"></select></div><div class="fld"><label>Термін</label><input id="tk-due" type="date"></div></div>
+  <div class="fld"><label>Нотатка</label><textarea id="tk-note" placeholder="деталі…"></textarea></div>
+  <div class="mact"><button class="btn" data-close>Скасувати</button><button class="btn primary" id="tk-save">Зберегти</button></div>
+</div></div>
+
+<script>
+/* ============================================================
+   ДАНІ — спільний бекенд: Cloudflare Worker + D1 (SQLite).
+   Увесь доступ до даних зосереджено тут. Впиши адресу воркера:
+   ============================================================ */
+const API_BASE='https://rozborka-proxy.dima-kozhuhar-08.workers.dev';
+
+const uid=p=>p+Math.random().toString(36).slice(2,7)+Date.now().toString(36).slice(-4);
+const thisMonth=()=>new Date().toISOString().slice(0,7);
+
+const LS_SET='cg_settings',LS_CACHE='cg_cache_v3';
+function loadSettings(){try{const r=localStorage.getItem(LS_SET);if(r)return JSON.parse(r);}catch(e){}return{theme:'light',accent:'navy',bg:'plain'};}
+function saveSettings(){try{localStorage.setItem(LS_SET,JSON.stringify(S.settings))}catch(e){}}
+function cacheSave(){try{localStorage.setItem(LS_CACHE,JSON.stringify({workers:S.workers,donors:S.donors,parts:S.parts,orders:S.orders,tasks:S.tasks}))}catch(e){}}
+function cacheLoad(){try{const r=localStorage.getItem(LS_CACHE);if(r)return JSON.parse(r);}catch(e){}return null;}
+
+let S={workers:[],donors:[],parts:[],orders:[],tasks:[],settings:loadSettings()};
+let paySales={},payPending={};
+
+async function apiGet(path){const r=await fetch(API_BASE+path);if(!r.ok){let m='';try{m=(await r.json()).error||''}catch(e){}throw new Error(m||('HTTP '+r.status));}return r.json();}
+async function apiSend(method,path,body){const r=await fetch(API_BASE+path,{method,headers:{'Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!r.ok){let m='';try{m=(await r.json()).error||''}catch(e){}throw new Error(m||('HTTP '+r.status));}try{return await r.json();}catch(e){return{};}}
+
+function bnr(type,msg){const b=document.getElementById('banner');if(b){b.className='banner '+type;b.textContent=msg;}}
+function bnrHide(){const b=document.getElementById('banner');if(b)b.className='banner';}
+function afterMutate(){cacheSave();renderAll();}
+function guard(p){return Promise.resolve(p).catch(err=>{console.error(err);bnr('err','Не збережено ('+err.message+'). Оновлюю з сервера…');return DB.load().then(()=>{bnrHide();renderAll();}).catch(()=>{});});}
+
+const DB={
+  load(){return apiGet('/api/data').then(d=>{S.workers=d.workers||[];S.donors=d.donors||[];S.parts=d.parts||[];S.orders=d.orders||[];S.tasks=d.tasks||[];cacheSave();});},
+  getOne(entity,id){return apiGet('/api/'+entity+'/'+id);},
+  createPart(p){S.parts.push(p);afterMutate();return guard(apiSend('POST','/api/parts',p));},
+  updatePart(id,f){const p=S.parts.find(x=>x.id===id);if(p)Object.assign(p,f);afterMutate();return guard(apiSend('PATCH','/api/parts/'+id,f));},
+  deletePart(id){S.parts=S.parts.filter(x=>x.id!==id);afterMutate();return guard(apiSend('DELETE','/api/parts/'+id));},
+  createDonor(d){S.donors.push(d);afterMutate();return guard(apiSend('POST','/api/donors',d));},
+  updateDonor(id,f){const x=S.donors.find(y=>y.id===id);if(x)Object.assign(x,f);afterMutate();return guard(apiSend('PATCH','/api/donors/'+id,f));},
+  deleteDonor(id){S.donors=S.donors.filter(x=>x.id!==id);afterMutate();return guard(apiSend('DELETE','/api/donors/'+id));},
+  createOrder(o){return guard(apiSend('POST','/api/orders',o).then(res=>{o.num=res.num;S.orders.push(o);afterMutate();}));},
+  updateOrder(id,f){const o=S.orders.find(x=>x.id===id);if(o)Object.assign(o,f);afterMutate();return guard(apiSend('PATCH','/api/orders/'+id,f));},
+  createWorker(w){S.workers.push(w);afterMutate();return guard(apiSend('POST','/api/workers',w));},
+  createTask(t){S.tasks.push(t);afterMutate();return guard(apiSend('POST','/api/tasks',t));},
+  updateTask(id,f){const x=S.tasks.find(y=>y.id===id);if(x)Object.assign(x,f);afterMutate();return guard(apiSend('PATCH','/api/tasks/'+id,f));},
+  deleteTask(id){S.tasks=S.tasks.filter(x=>x.id!==id);afterMutate();return guard(apiSend('DELETE','/api/tasks/'+id));}
+};
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};};
+const flushPay=debounce(()=>{const p=payPending;payPending={};Object.keys(p).forEach(id=>guard(apiSend('PATCH','/api/workers/'+id,p[id])));},600);
+function sendWorkerDebounced(id,f,v){if(!payPending[id])payPending[id]={};payPending[id][f]=v;flushPay();}
+function updatePayTotal(id){const w=S.workers.find(x=>x.id===id);if(!w)return;const pr=w.pr||{};const sl=paySales[id]||0;const base=(+pr.days||0)*(+pr.rate||0);const bonus=sl*(+pr.percent||0)/100;const el=document.querySelector('[data-total="'+id+'"]');if(el)el.textContent=money(base+bonus)+' ₴';}
+
+const CATEGORIES=["Двигун","КПП","Оптика","Кузов","Електрика","Підвіска","Салон","Гальма","Інше"];
+const CAT_ICON={Двигун:'M12 2v4M5 8h14M6 8l-1 6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2l-1-6M9 16v3M15 16v3',Оптика:'M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2Z',default:'M14 16.5V14a2 2 0 0 0-2-2H8m10 4.5 2-6.5-1.5-4.5A2 2 0 0 0 14.6 4H9.4a2 2 0 0 0-1.9 1.4L6 10l-2 6.5M4 16.5h16'};
+
+const $=s=>document.querySelector(s);
+const $$=s=>document.querySelectorAll(s);
+const money=n=>new Intl.NumberFormat('uk-UA').format(Math.round(n||0));
+const donorName=id=>{const d=S.donors.find(x=>x.id===id);return d?`${d.make} ${d.model} ${d.year||''}`.trim():'—';};
+const donorCost=d=>((+d.buy||0)+(+d.ship||0))*(+d.rate||0);
+const fmtDT=iso=>{if(!iso)return'';const d=new Date(iso);if(isNaN(d))return'';const p=n=>String(n).padStart(2,'0');return`${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;};
+let formPhoto={pt:null,dn:null};
+let formThumb={pt:null,dn:null};
+let formMedia={pt:[],dn:[]};
+const MAX_MEDIA_MB=6;
+
+/* робить дві версії: велику (для картки) і мініатюру (для списку) */
+function compressImage(file,cb){const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+  const draw=(max,q)=>{let w=img.width,h=img.height;if(w>max||h>max){const s=max/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+    const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);return c.toDataURL('image/jpeg',q);};
+  cb(draw(900,0.72),draw(240,0.55));};img.src=r.result;};r.readAsDataURL(file);}
+function pickImage(cb){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files&&i.files[0];if(f)compressImage(f,cb);};i.click();}
+/* множинний вибір фото */
+function pickImages(cb){const i=document.createElement('input');i.type='file';i.accept='image/*';i.multiple=true;
+  i.onchange=()=>{const files=[...(i.files||[])];let done=0;const out=[];
+    if(!files.length)return;
+    files.forEach((f,idx)=>compressImage(f,(big,th)=>{out[idx]={t:'img',d:big,th};if(++done===files.length)cb(out.filter(Boolean));}));};
+  i.click();}
+/* відео — без перекодування, тому обмежуємо розмір */
+function pickVideo(cb){const i=document.createElement('input');i.type='file';i.accept='video/*';i.multiple=true;
+  i.onchange=()=>{const files=[...(i.files||[])];if(!files.length)return;let done=0;const out=[];
+    files.forEach((f,idx)=>{
+      if(f.size>MAX_MEDIA_MB*1024*1024){alert(`Відео «${f.name}» завелике (${(f.size/1048576).toFixed(1)} МБ). Ліміт ${MAX_MEDIA_MB} МБ на файл — зніми коротше або стисни.`);if(++done===files.length)cb(out.filter(Boolean));return;}
+      const r=new FileReader();r.onload=()=>{out[idx]={t:'vid',d:r.result,name:f.name};if(++done===files.length)cb(out.filter(Boolean));};r.readAsDataURL(f);});};
+  i.click();}
+function setPhotoZone(which,dataurl){const z=document.getElementById(which+'-photozone');if(!z)return;if(dataurl){z.classList.add('has');z.innerHTML='<img src="'+dataurl+'"><span></span>';}else{z.classList.remove('has');z.innerHTML='<span>Перетягни або клікни, щоб додати фото</span>';}}
+function renderMediaStrip(which){
+  const box=document.getElementById(which+'-mediastrip');if(!box)return;
+  const arr=formMedia[which]||[];
+  box.innerHTML=arr.map((m,i)=>m.t==='vid'
+    ?`<div class="mitem"><video src="${m.d}" muted playsinline preload="metadata"></video><span class="vbadge">ВІДЕО</span><div class="mdel" data-i="${i}">✕</div></div>`
+    :`<div class="mitem"><img src="${m.th||m.d}" alt=""><div class="mdel" data-i="${i}">✕</div></div>`).join('');
+  box.querySelectorAll('.mdel').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();formMedia[which].splice(+b.dataset.i,1);renderMediaStrip(which);}));
+}
+function loadFormPhoto(which,entity,rec){
+  formMedia[which]=Array.isArray(rec.media)?rec.media.map(m=>({...m})):[];
+  renderMediaStrip(which);
+  if(rec.photo){setPhotoZone(which,rec.photo);}
+  else if(rec.hasPhoto||rec.hasMedia){setPhotoZone(which,rec.thumb||null);
+    DB.getOne(entity,rec.id).then(f=>{if(!f)return;
+      if(f.photo){rec.photo=f.photo;setPhotoZone(which,f.photo);}
+      if(Array.isArray(f.media)){rec.media=f.media;formMedia[which]=f.media.map(m=>({...m}));renderMediaStrip(which);}
+    }).catch(()=>{});}
+  else{setPhotoZone(which,rec.thumb||null);}
+}
+function setDrawerPhoto(du){const el=document.getElementById('dw-photo');if(el)el.innerHTML='<img src="'+du+'">';}
+function drawerMedia(media){
+  const box=document.getElementById('dw-media');if(!box)return;
+  if(!media||!media.length){box.innerHTML='';return;}
+  box.innerHTML='<div class="mediastrip">'+media.map(m=>m.t==='vid'
+    ?`<div class="mitem"><video src="${m.d}" controls playsinline preload="metadata"></video><span class="vbadge">ВІДЕО</span></div>`
+    :`<div class="mitem"><img src="${m.d}" alt="" onclick="window.open(this.src)"></div>`).join('')+'</div>';
+}
+['pt','dn'].forEach(w=>{
+  const z=document.getElementById(w+'-photozone');
+  if(z){
+    z.addEventListener('click',()=>pickImage((big,th)=>{formPhoto[w]=big;formThumb[w]=th;setPhotoZone(w,big);}));
+    z.addEventListener('dragover',e=>e.preventDefault());
+    z.addEventListener('drop',e=>{e.preventDefault();const fs=[...(e.dataTransfer.files||[])];if(!fs.length)return;
+      compressImage(fs[0],(big,th)=>{formPhoto[w]=big;formThumb[w]=th;setPhotoZone(w,big);});
+      if(fs.length>1){let done=0;const extra=[];fs.slice(1).forEach((f,i)=>compressImage(f,(b,t)=>{extra[i]={t:'img',d:b,th:t};if(++done===fs.length-1){formMedia[w]=(formMedia[w]||[]).concat(extra.filter(Boolean));renderMediaStrip(w);}}));}
+    });
+  }
+  const ai=document.getElementById(w+'-addImgs');
+  if(ai)ai.addEventListener('click',()=>pickImages(arr=>{formMedia[w]=(formMedia[w]||[]).concat(arr);renderMediaStrip(w);
+    if(!formPhoto[w]&&arr[0]){formPhoto[w]=arr[0].d;formThumb[w]=arr[0].th;setPhotoZone(w,arr[0].d);}}));
+  const av=document.getElementById(w+'-addVid');
+  if(av)av.addEventListener('click',()=>pickVideo(arr=>{formMedia[w]=(formMedia[w]||[]).concat(arr);renderMediaStrip(w);}));
+});
+const workerName=id=>{const w=S.workers.find(x=>x.id===id);return w?w.name:'—';};
+/* Суми замовлення з урахуванням знижок:
+   orderGross — сума позицій без знижок
+   orderPosDisc — сума знижок по позиціях
+   orderDiscAmt — знижка на все замовлення (₴ або %)
+   orderTotal — до сплати */
+const orderGross=o=>(o.positions||[]).reduce((s,p)=>s+p.qty*p.price,0);
+const orderPosDisc=o=>(o.positions||[]).reduce((s,p)=>s+Math.min(p.qty*p.price,(+p.disc||0)),0);
+function orderDiscAmt(o){const base=orderGross(o)-orderPosDisc(o);const v=+o.discount||0;if(!v)return 0;
+  return o.discountType==='pct'?Math.min(base,base*v/100):Math.min(base,v);}
+const orderTotal=o=>Math.max(0,orderGross(o)-orderPosDisc(o)-orderDiscAmt(o));
+const orderSum=o=>orderTotal(o);
+const barHTML=(name,val,max,cls)=>`<div class="barrow"><div class="nm">${name}</div><div class="track"><div class="fill ${cls||'acc'}" style="width:${Math.min(100,Math.abs(val)/max*100)}%"></div></div><div class="val ${val<0?'neg':''}">${val<0?'−':''}${money(Math.abs(val))} ₴</div></div>`;
+const trkColor=t=>({'Новий':'#41616f','Відправлено':'#e8952a','Отримано':'#2f8f5b','Повернено':'#c8102e'}[t]||'#9aa0a8');
+
+function derive(){
+  const active=S.orders.filter(o=>o.tracking!=='Повернено');
+  const soldQty={},soldUnique=new Set(),byDonor={};
+  active.forEach(o=>{
+    // знижка на все замовлення розкидається по позиціях пропорційно
+    const base=orderGross(o)-orderPosDisc(o);
+    const k=base>0?(base-orderDiscAmt(o))/base:1;
+    (o.positions||[]).forEach(pos=>{
+      soldQty[pos.partId]=(soldQty[pos.partId]||0)+pos.qty;
+      const part=S.parts.find(x=>x.id===pos.partId);
+      const net=Math.max(0,pos.qty*pos.price-(+pos.disc||0))*k;
+      if(part){if(part.type!=='universal')soldUnique.add(part.id);if(part.donorId)byDonor[part.donorId]=(byDonor[part.donorId]||0)+net;}
+    });
+  });
+  return {soldQty,soldUnique,byDonor,active};
+}
+function partState(p,d){
+  if(p.type==='universal'){const rem=(p.qtyStock||0)-(d.soldQty[p.id]||0);return{universal:true,remaining:rem,inStock:rem>0};}
+  const sold=d.soldUnique.has(p.id);return{sold,inStock:!sold};
+}
+
+function renderDash(){
+  const d=derive();const m=thisMonth();
+  const activeM=d.active.filter(o=>(o.date||'').slice(0,7)===m);
+  let stockVal=0,stockCnt=0;
+  S.parts.forEach(p=>{const st=partState(p,d);if(st.universal){if(st.remaining>0){stockVal+=p.price*st.remaining;stockCnt+=st.remaining;}}else if(st.inStock){stockVal+=p.price;stockCnt++;}});
+  const carsInWork=S.donors.filter(x=>x.status!=='Розібрано').length;
+  const totalProfit=S.donors.reduce((s,x)=>s+((d.byDonor[x.id]||0)-donorCost(x)),0);
+  const revMonth=activeM.reduce((s,o)=>s+orderSum(o),0);
+  const ordMonth=activeM.length;
+  const avg=ordMonth?revMonth/ordMonth:0;
+  const cod=d.active.filter(o=>o.pay==='cod'&&['Новий','Відправлено'].includes(o.tracking)).reduce((s,o)=>s+Math.max(0,orderSum(o)-(o.prepay||0)),0);
+  let partsSoldM=0;activeM.forEach(o=>(o.positions||[]).forEach(p=>partsSoldM+=p.qty));
+
+  $('#cluster').innerHTML=`
+    <div class="gauge green"><div class="lbl">Загальний прибуток</div><div class="num">${money(totalProfit)}<span class="unit">₴</span></div><div class="sub">продано мінус собівартість</div></div>
+    <div class="gauge"><div class="lbl">Виручка за місяць</div><div class="num">${money(revMonth)}<span class="unit">₴</span></div><div class="sub">${new Date().toLocaleDateString('uk-UA',{month:'long'})}</div></div>
+    <div class="gauge amber"><div class="lbl">Заморожено на складі</div><div class="num">${money(stockVal)}<span class="unit">₴</span></div><div class="sub">вартість деталей у наявності</div></div>
+    <div class="gauge red"><div class="lbl">Наложка в дорозі</div><div class="num">${money(cod)}<span class="unit">₴</span></div><div class="sub">неотримана післяплата</div></div>`;
+  $('#cluster2').innerHTML=`
+    <div class="gauge"><div class="lbl">Замовлень за місяць</div><div class="num">${ordMonth}</div><div class="sub">створено цього місяця</div></div>
+    <div class="gauge"><div class="lbl">Середній чек</div><div class="num">${money(avg)}<span class="unit">₴</span></div><div class="sub">за місяць</div></div>
+    <div class="gauge"><div class="lbl">Деталей продано</div><div class="num">${partsSoldM}</div><div class="sub">за місяць</div></div>
+    <div class="gauge"><div class="lbl">Авто в роботі</div><div class="num">${carsInWork}</div><div class="sub">не розібрані повністю</div></div>`;
+
+  const rows=S.donors.map(x=>({name:`${x.make} ${x.model}`,profit:(d.byDonor[x.id]||0)-donorCost(x)})).sort((a,b)=>b.profit-a.profit);
+  const max=Math.max(...rows.map(r=>Math.abs(r.profit)),1);
+  $('#profitBars').innerHTML=rows.map(r=>barHTML(r.name,r.profit,max,r.profit<0?'neg':'')).join('');
+
+  const wsales={};activeM.forEach(o=>{if(o.seller)wsales[o.seller]=(wsales[o.seller]||0)+orderSum(o);});
+  const wrows=S.workers.map(w=>({name:w.name,v:wsales[w.id]||0})).sort((a,b)=>b.v-a.v);
+  const wmax=Math.max(...wrows.map(r=>r.v),1);
+  $('#workerBars').innerHTML=wrows.length?wrows.map(r=>barHTML(r.name,r.v,wmax)).join(''):'<div class="empty">—</div>';
+
+  const cat={};d.active.forEach(o=>(o.positions||[]).forEach(p=>{const part=S.parts.find(x=>x.id===p.partId);if(part)cat[part.cat]=(cat[part.cat]||0)+p.qty*p.price;}));
+  const crows=Object.entries(cat).map(([k,v])=>({name:k,v})).sort((a,b)=>b.v-a.v).slice(0,6);
+  const cmax=Math.max(...crows.map(r=>r.v),1);
+  $('#catBars').innerHTML=crows.length?crows.map(r=>barHTML(r.name,r.v,cmax)).join(''):'<div class="empty">Ще нема продажів</div>';
+
+  const stc={'Новий':0,'Відправлено':0,'Отримано':0,'Повернено':0};S.orders.forEach(o=>{stc[o.tracking]=(stc[o.tracking]||0)+1;});
+  $('#orderStatus').innerHTML=Object.entries(stc).map(([k,n])=>`<div class="statline"><span class="sw" style="background:${trkColor(k)}"></span>${k}<span class="c">${n}</span></div>`).join('');
+
+  let inStk=0,soldC=0,uni=0;S.parts.forEach(p=>{const st=partState(p,d);if(st.universal)uni++;else if(st.sold)soldC++;else inStk++;});
+  $('#statusList').innerHTML=[['В наявності','#2f8f5b',inStk],['Продано','#9aa0a8',soldC],['Універсальні','#41616f',uni]].map(([k,c,n])=>`<div class="statline"><span class="sw" style="background:${c}"></span>${k}<span class="c">${n}</span></div>`).join('');
+
+  const td=rows.slice(0,5);
+  $('#topDonors').innerHTML=td.map(r=>`<div class="statline">${r.name}<span class="c" style="color:${r.profit<0?'var(--red)':'var(--green)'}">${r.profit<0?'−':''}${money(Math.abs(r.profit))} ₴</span></div>`).join('');
+}
+
+let fStatus='Усі',fCat='Усі',q='';
+/* ── ФІЛЬТРИ ТА ПОШУК ── */
+const F={
+  p:{donor:'',cond:'',loc:'',sort:'new'},
+  d:{q:'',status:'',auction:'',make:'',sort:'new'},
+  o:{q:'',trk:'Усі',delivery:'',pay:'',seller:'',sort:'new'},
+  t:{q:'',status:'',worker:''}
+};
+const norm=v=>v===null||v===undefined?'':String(v);
+/* збирає ВСІ значущі поля обʼєкта в один рядок для пошуку */
+function hayOf(obj,extra){
+  const skip={photo:1,thumb:1,media:1,hasPhoto:1,hasMedia:1,id:1,donorId:1,positions:1};
+  let out=[];
+  for(const k in obj){if(skip[k])continue;const v=obj[k];if(v===null||v===undefined)continue;
+    if(typeof v==='object')continue;out.push(String(v));}
+  if(extra)out.push(extra);
+  return out.join(' ').toLowerCase();
+}
+/* пошук за кількома словами: усі слова мають знайтися */
+function matches(hay,query){
+  if(!query)return true;
+  return query.toLowerCase().split(/\s+/).filter(Boolean).every(w=>hay.includes(w));
+}
+function fillSel(sel,opts,cur,allLabel){
+  if(!sel)return;
+  sel.innerHTML=`<option value="">${allLabel}</option>`+opts.filter(Boolean).map(o=>`<option ${o===cur?'selected':''}>${o}</option>`).join('');
+  sel.value=cur||'';
+}
+const uniq=arr=>[...new Set(arr.filter(v=>v!==null&&v!==undefined&&v!==''))].sort();
+function renderParts(){
+  const d=derive();
+  $('#statusFilters').innerHTML=['Усі','В наявності','Продано','Універсальні'].map(s=>`<button class="chip ${s===fStatus?'on':''}" data-s="${s}">${s}</button>`).join('');
+  $('#catFilters').innerHTML=['Усі',...CATEGORIES].map(c=>`<button class="chip ${c===fCat?'on':''}" data-c="${c}">${c}</button>`).join('');
+  fillSel($('#pfDonor'),S.donors.map(x=>x.id),F.p.donor,'Будь-який донор');
+  if($('#pfDonor'))$('#pfDonor').innerHTML=`<option value="">Будь-який донор</option>`+S.donors.map(x=>`<option value="${x.id}" ${x.id===F.p.donor?'selected':''}>${donorName(x.id)}</option>`).join('')+`<option value="__u" ${F.p.donor==='__u'?'selected':''}>Універсальні</option>`;
+  fillSel($('#pfCond'),uniq(S.parts.map(p=>p.cond)),F.p.cond,'Будь-який стан');
+  fillSel($('#pfLoc'),uniq(S.parts.map(p=>p.loc)),F.p.loc,'Будь-яке місце');
+  if($('#pfSort'))$('#pfSort').value=F.p.sort;
+
+  let list=S.parts.filter(p=>{const st=partState(p,d);
+    if(fStatus==='В наявності'&&!(st.inStock&&!st.universal))return false;
+    if(fStatus==='Продано'&&!(!st.universal&&st.sold))return false;
+    if(fStatus==='Універсальні'&&!st.universal)return false;
+    if(fCat!=='Усі'&&p.cat!==fCat)return false;
+    if(F.p.donor==='__u'&&p.donorId)return false;
+    if(F.p.donor&&F.p.donor!=='__u'&&p.donorId!==F.p.donor)return false;
+    if(F.p.cond&&p.cond!==F.p.cond)return false;
+    if(F.p.loc&&p.loc!==F.p.loc)return false;
+    if(q){
+      const dn=p.donorId?S.donors.find(x=>x.id===p.donorId):null;
+      const extra=(p.donorId?donorName(p.donorId):'універсальна')+' '+(dn?[dn.vin,dn.lot,dn.engine,dn.trim,dn.color].map(norm).join(' '):'')+' '+workerName(p.loadedBy);
+      if(!matches(hayOf(p,extra),q))return false;
+    }
+    return true;});
+
+  const key=F.p.sort;
+  if(key==='name')list.sort((a,b)=>a.name.localeCompare(b.name,'uk'));
+  else if(key==='price-')list.sort((a,b)=>(b.price||0)-(a.price||0));
+  else if(key==='price+')list.sort((a,b)=>(a.price||0)-(b.price||0));
+  else list=[...list].reverse();
+
+  if($('#pfCount'))$('#pfCount').textContent=`Знайдено: ${list.length} із ${S.parts.length}`;
+  const badge=(p,st)=>st.universal?(st.remaining>0?'<span class="badge b-univ">Універсальна</span>':'<span class="badge b-none">Немає</span>'):(st.sold?'<span class="badge b-sold">Продано</span>':'<span class="badge b-stock">В наявності</span>');
+  $('#partsGrid').innerHTML=list.length?list.map(p=>{const st=partState(p,d);const icon=CAT_ICON[p.cat]||CAT_ICON.default;
+    const img=p.thumb?`<img src="${p.thumb}" alt="" loading="lazy">`:'';
+    return`<div class="part" data-id="${p.id}"><div class="photo">${img}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="${icon}"/></svg>${st.universal?`<span class="qty">×${st.remaining}</span>`:''}<span class="price">${money(p.price)} ₴</span></div><div class="body"><div class="nm">${p.name}</div><div class="don">${p.donorId?donorName(p.donorId):'Універсальна'} · ${p.cond}</div><div class="meta">${badge(p,st)}<span class="loc">${p.loc}</span></div></div></div>`;}).join(''):`<div class="empty" style="grid-column:1/-1">Нічого не знайдено.</div>`;
+}
+
+function renderDonors(){
+  const d=derive();
+  fillSel($('#dfStatus'),uniq(S.donors.map(x=>x.status)),F.d.status,'Будь-який статус');
+  fillSel($('#dfAuction'),uniq(S.donors.map(x=>x.auction)),F.d.auction,'Будь-який аукціон');
+  fillSel($('#dfMake'),uniq(S.donors.map(x=>x.make)),F.d.make,'Будь-яка марка');
+  if($('#dfSort'))$('#dfSort').value=F.d.sort;
+
+  let list=S.donors.filter(x=>{
+    if(F.d.status&&x.status!==F.d.status)return false;
+    if(F.d.auction&&x.auction!==F.d.auction)return false;
+    if(F.d.make&&x.make!==F.d.make)return false;
+    if(F.d.q&&!matches(hayOf(x,String(donorCost(x))),F.d.q))return false;
+    return true;});
+
+  const prof=x=>(d.byDonor[x.id]||0)-donorCost(x);
+  if(F.d.sort==='profit-')list.sort((a,b)=>prof(b)-prof(a));
+  else if(F.d.sort==='profit+')list.sort((a,b)=>prof(a)-prof(b));
+  else if(F.d.sort==='name')list.sort((a,b)=>(a.make+a.model).localeCompare(b.make+b.model,'uk'));
+  else list=[...list].reverse();
+
+  if($('#dfCount'))$('#dfCount').textContent=`Знайдено: ${list.length} із ${S.donors.length}`;
+  $('#donorList').innerHTML=list.length?list.map(x=>{const cost=donorCost(x),sold=d.byDonor[x.id]||0,profit=sold-cost,neg=profit<0;
+    const th=x.thumb?`<img class="dthumb" src="${x.thumb}" alt="" loading="lazy">`:'';
+    return`<div class="donor" data-id="${x.id}"><div class="dmain">${th}<div style="min-width:0"><div class="title">${x.make} ${x.model} ${x.year||''}</div><div class="vin">${x.vin||''}${x.status?' · '+x.status:''}</div></div></div><div class="fig"><div class="k">Собівартість</div><div class="v">${money(cost)} ₴</div></div><div class="fig"><div class="k">Продано</div><div class="v">${money(sold)} ₴</div></div><div class="fig"><div class="k">Прибуток</div><div class="v ${neg?'negv':'pos'}">${neg?'−':''}${money(Math.abs(profit))} ₴</div></div></div>`;}).join(''):`<div class="empty">Нічого не знайдено.</div>`;
+  $$('#donorList .donor').forEach(el=>el.addEventListener('click',()=>openDonorDrawer(el.dataset.id)));
+}
+
+function renderOrders(){
+  const opts=t=>['Новий','Відправлено','Отримано','Повернено'].map(x=>`<option ${x===t?'selected':''}>${x}</option>`).join('');
+  $('#oTrkFilters').innerHTML=['Усі','Новий','Відправлено','Отримано','Повернено'].map(s=>`<button class="chip ${s===F.o.trk?'on':''}" data-t="${s}">${s}</button>`).join('');
+  fillSel($('#ofDelivery'),uniq(S.orders.map(o=>o.delivery==='Інша'?(o.deliveryOther||'Інша'):o.delivery)),F.o.delivery,'Будь-яка доставка');
+  fillSel($('#ofPay'),['Повна оплата','Післяплата'],F.o.pay,'Будь-яка оплата');
+  if($('#ofSeller'))$('#ofSeller').innerHTML=`<option value="">Будь-який продавець</option>`+S.workers.map(w=>`<option value="${w.id}" ${w.id===F.o.seller?'selected':''}>${w.name}</option>`).join('');
+  if($('#ofSort'))$('#ofSort').value=F.o.sort;
+
+  let list=S.orders.filter(o=>{
+    if(F.o.trk!=='Усі'&&o.tracking!==F.o.trk)return false;
+    const dlv=o.delivery==='Інша'?(o.deliveryOther||'Інша'):o.delivery;
+    if(F.o.delivery&&dlv!==F.o.delivery)return false;
+    if(F.o.pay){const pl=o.pay==='cod'?'Післяплата':'Повна оплата';if(pl!==F.o.pay)return false;}
+    if(F.o.seller&&o.seller!==F.o.seller)return false;
+    if(F.o.q){
+      const partsTxt=(o.positions||[]).map(pos=>{const p=S.parts.find(x=>x.id===pos.partId);return p?p.name+' '+norm(p.winCode)+' '+norm(p.barcode)+' '+norm(p.loc):'';}).join(' ');
+      const extra=partsTxt+' '+workerName(o.seller)+' '+fmtDT(o.date)+' '+(o.pay==='cod'?'післяплата':'повна оплата')+' '+money(orderTotal(o));
+      if(!matches(hayOf(o,extra),F.o.q))return false;
+    }
+    return true;});
+
+  if(F.o.sort==='old')list=[...list];
+  else if(F.o.sort==='sum-')list=[...list].sort((a,b)=>orderTotal(b)-orderTotal(a));
+  else if(F.o.sort==='sum+')list=[...list].sort((a,b)=>orderTotal(a)-orderTotal(b));
+  else list=[...list].reverse();
+
+  if($('#ofCount'))$('#ofCount').textContent=`Знайдено: ${list.length} із ${S.orders.length}`;
+  $('#orderTable').innerHTML=`<div class="orow head"><div>№</div><div>Клієнт</div><div>Позицій</div><div>Сума</div><div>Продавець</div><div>Відстеження</div></div>`+
+    (list.length?list.map(o=>{const disc=orderGross(o)-orderTotal(o);
+      return`<div class="orow" data-id="${o.id}"><div class="oid">#${o.num}<div style="font-size:10.5px;color:var(--muted);font-weight:400">${fmtDT(o.date)}</div></div><div>${o.client||'—'}${o.ttn?`<div style="font-size:11px;color:var(--muted)">ТТН ${o.ttn}</div>`:''}</div><div>${(o.positions||[]).length}</div><div class="osum">${money(orderTotal(o))} ₴${disc>0?`<div class="posdisc">−${money(disc)} ₴</div>`:''}</div><div>${workerName(o.seller)}</div><div><select class="trk-sel" data-id="${o.id}" style="border:0;background:transparent;font-family:inherit;font-weight:600;color:${trkColor(o.tracking)};cursor:pointer">${opts(o.tracking)}</select></div></div>`;}).join(''):`<div class="empty">Нічого не знайдено.</div>`);
+  $$('.trk-sel').forEach(sel=>sel.addEventListener('change',e=>{DB.updateOrder(e.target.dataset.id,{tracking:e.target.value});}));
+  $$('#orderTable .orow[data-id]').forEach(row=>row.addEventListener('click',e=>{if(e.target.closest('.trk-sel'))return;const o=S.orders.find(x=>x.id===row.dataset.id);if(o)openOrder(null,o);}));
+}
+
+function renderPay(){
+  const m=$('#payMonth').value||thisMonth();
+  const active=S.orders.filter(o=>o.tracking!=='Повернено'&&(o.date||'').slice(0,7)===m);
+  const sales={};active.forEach(o=>{if(o.seller)sales[o.seller]=(sales[o.seller]||0)+orderSum(o);});
+  paySales=sales;
+  $('#payList').innerHTML=S.workers.map(w=>{const pr=w.pr||{days:0,rate:0,percent:0};const sl=sales[w.id]||0;const base=(+pr.days||0)*(+pr.rate||0);const bonus=sl*(+pr.percent||0)/100;const total=base+bonus;
+    return`<div class="pr"><div class="top"><div class="nm">${w.name}</div><div class="sales">Продажів за місяць: <b>${money(sl)} ₴</b></div></div><div class="grid"><div><label>Робочих днів</label><input type="number" data-w="${w.id}" data-f="days" value="${pr.days||''}"></div><div><label>Ставка/день, ₴</label><input type="number" data-w="${w.id}" data-f="rate" value="${pr.rate||''}"></div><div><label>Відсоток з продажів, %</label><input type="number" data-w="${w.id}" data-f="percent" value="${pr.percent||''}"></div><div class="total"><div class="k">До виплати</div><div class="v" data-total="${w.id}">${money(total)} ₴</div></div></div></div>`;}).join('');
+  $$('#payList input').forEach(inp=>inp.addEventListener('input',e=>{const id=e.target.dataset.w,f=e.target.dataset.f,val=+e.target.value||0;const w=S.workers.find(x=>x.id===id);if(!w)return;if(!w.pr)w.pr={};w.pr[f]=val;updatePayTotal(id);cacheSave();sendWorkerDebounced(id,f,val);}));
+}
+
+function renderTasks(){
+  fillSel($('#tfStatus'),['Нове','В роботі','Готово'],F.t.status,'Будь-який статус');
+  if($('#tfWorker'))$('#tfWorker').innerHTML=`<option value="">Будь-який виконавець</option>`+S.workers.map(w=>`<option value="${w.id}" ${w.id===F.t.worker?'selected':''}>${w.name}</option>`).join('');
+  let list=S.tasks.filter(t=>{
+    if(F.t.status&&t.status!==F.t.status)return false;
+    if(F.t.worker&&t.worker!==F.t.worker)return false;
+    if(F.t.q&&!matches(hayOf(t,workerName(t.worker)),F.t.q))return false;
+    return true;});
+  if($('#tfCount'))$('#tfCount').textContent=`Знайдено: ${list.length} із ${S.tasks.length}`;
+  $('#taskList').innerHTML=list.length?[...list].reverse().map(t=>{
+    const opts=['Нове','В роботі','Готово'].map(x=>`<option ${x===t.status?'selected':''}>${x}</option>`).join('');
+    const meta=[workerName(t.worker),t.due?'до '+t.due.split('-').reverse().join('.'):'',t.note].filter(Boolean).join(' · ');
+    return`<div class="tk"><div class="tinfo"><div class="tt">${t.title}</div><div class="tm">${meta}</div></div><select class="tk-sel" data-id="${t.id}">${opts}</select><div class="tx" data-id="${t.id}">✕</div></div>`;
+  }).join(''):`<div class="empty">Нічого не знайдено.</div>`;
+  $$('.tk-sel').forEach(s=>s.addEventListener('change',e=>DB.updateTask(e.target.dataset.id,{status:e.target.value})));
+  $$('#taskList .tx').forEach(b=>b.addEventListener('click',e=>{if(confirm('Видалити завдання?'))DB.deleteTask(e.target.dataset.id);}));
+}
+function renderAll(){renderDash();renderParts();renderDonors();renderOrders();renderPay();renderTasks();}
+
+const TITLES={dash:'Огляд',parts:'Деталі на складі',donors:'Донори',orders:'Замовлення',scan:'Сканер',pay:'Розрахунок ЗП',tasks:'Завдання'};
+/* ── НАВІГАЦІЯ ── спільна для бокового меню і мобільного таббару */
+function go(v){
+  if(!v||!TITLES[v])return;
+  $$('#nav a').forEach(x=>x.classList.toggle('on',x.dataset.view===v));
+  $$('.view').forEach(s=>s.classList.toggle('on',s.id==='view-'+v));
+  $('#ttl').textContent=TITLES[v];
+  $('#searchWrap').style.display=v==='parts'?'flex':'none';
+  const ab=$('#addBtn');
+  if(v==='donors'){ab.style.display='';$('#addBtnTxt').textContent='Додати донора';ab.dataset.act='donor';}
+  else if(v==='parts'||v==='dash'){ab.style.display='';$('#addBtnTxt').textContent='Додати деталь';ab.dataset.act='part';}
+  else if(v==='tasks'){ab.style.display='';$('#addBtnTxt').textContent='Нове завдання';ab.dataset.act='task';}
+  else if(v==='orders'){ab.style.display='';$('#addBtnTxt').textContent='Нове замовлення';ab.dataset.act='order';}
+  else{ab.style.display='none';}
+  if(v==='scan')setTimeout(()=>{const sc=$('#scanCode');if(sc)sc.focus();},100);
+  syncTab(v);
+  const mp=$('#morePanel');if(mp)mp.classList.remove('on');
+  const sc=document.querySelector('.scroll');if(sc)sc.scrollTop=0;
+}
+$('#nav').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();go(a.dataset.view);});
+$('#search').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();if($('#pSearch'))$('#pSearch').value=e.target.value;renderParts();});
+$('#pSearch').addEventListener('input',e=>{q=e.target.value.trim().toLowerCase();if($('#search'))$('#search').value=e.target.value;renderParts();});
+$('#pfDonor').addEventListener('change',e=>{F.p.donor=e.target.value;renderParts();});
+$('#pfCond').addEventListener('change',e=>{F.p.cond=e.target.value;renderParts();});
+$('#pfLoc').addEventListener('change',e=>{F.p.loc=e.target.value;renderParts();});
+$('#pfSort').addEventListener('change',e=>{F.p.sort=e.target.value;renderParts();});
+$('#pfClear').addEventListener('click',()=>{F.p={donor:'',cond:'',loc:'',sort:'new'};fStatus='Усі';fCat='Усі';q='';$('#pSearch').value='';if($('#search'))$('#search').value='';renderParts();});
+
+$('#dSearch').addEventListener('input',e=>{F.d.q=e.target.value.trim();renderDonors();});
+$('#dfStatus').addEventListener('change',e=>{F.d.status=e.target.value;renderDonors();});
+$('#dfAuction').addEventListener('change',e=>{F.d.auction=e.target.value;renderDonors();});
+$('#dfMake').addEventListener('change',e=>{F.d.make=e.target.value;renderDonors();});
+$('#dfSort').addEventListener('change',e=>{F.d.sort=e.target.value;renderDonors();});
+$('#dfClear').addEventListener('click',()=>{F.d={q:'',status:'',auction:'',make:'',sort:'new'};$('#dSearch').value='';renderDonors();});
+
+$('#oSearch').addEventListener('input',e=>{F.o.q=e.target.value.trim();renderOrders();});
+$('#oTrkFilters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;F.o.trk=b.dataset.t;renderOrders();});
+$('#ofDelivery').addEventListener('change',e=>{F.o.delivery=e.target.value;renderOrders();});
+$('#ofPay').addEventListener('change',e=>{F.o.pay=e.target.value;renderOrders();});
+$('#ofSeller').addEventListener('change',e=>{F.o.seller=e.target.value;renderOrders();});
+$('#ofSort').addEventListener('change',e=>{F.o.sort=e.target.value;renderOrders();});
+$('#ofClear').addEventListener('click',()=>{F.o={q:'',trk:'Усі',delivery:'',pay:'',seller:'',sort:'new'};$('#oSearch').value='';renderOrders();});
+
+$('#tSearch').addEventListener('input',e=>{F.t.q=e.target.value.trim();renderTasks();});
+$('#tfStatus').addEventListener('change',e=>{F.t.status=e.target.value;renderTasks();});
+$('#tfWorker').addEventListener('change',e=>{F.t.worker=e.target.value;renderTasks();});
+$('#tfClear').addEventListener('click',()=>{F.t={q:'',status:'',worker:''};$('#tSearch').value='';renderTasks();});
+$('#statusFilters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;fStatus=b.dataset.s;renderParts();});
+$('#catFilters').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;fCat=b.dataset.c;renderParts();});
+$('#partsGrid').addEventListener('click',e=>{const c=e.target.closest('.part');if(!c)return;openPartDrawer(c.dataset.id);});
+
+$$('[data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('.modal').classList.remove('on')));
+$$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');}));
+function fillWorkers(sel,cur){sel.innerHTML=S.workers.map(w=>`<option value="${w.id}" ${w.id===cur?'selected':''}>${w.name}</option>`).join('');}
+function fillDonors(sel,all){sel.innerHTML=(all?'<option value="">— усі донори —</option>':'')+S.donors.map(x=>`<option value="${x.id}">${x.make} ${x.model} ${x.year}</option>`).join('');}
+function fillCats(sel){sel.innerHTML=CATEGORIES.map(c=>`<option>${c}</option>`).join('');}
+
+let ptType='unique',ptEditId=null;
+$('#pt-type').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;ptType=b.dataset.t;$$('#pt-type button').forEach(x=>x.classList.toggle('on',x===b));$('#pt-donorWrap').style.display=ptType==='unique'?'':'none';$('#pt-qtyWrap').style.display=ptType==='universal'?'':'none';});
+function openPart(prefill,edit){fillDonors($('#pt-donor'),false);fillCats($('#pt-cat'));fillWorkers($('#pt-loader'),edit?edit.loadedBy:lastWorker);ptEditId=edit?edit.id:null;$('#mPart h2').textContent=edit?'Редагувати деталь':'Нова деталь';$('#pt-save').textContent=edit?'Зберегти зміни':'Зберегти';
+  const set=(id,v)=>$('#'+id).value=(v===undefined||v===null)?'':v;
+  if(edit){set('pt-name',edit.name);set('pt-win',edit.winCode);set('pt-def',edit.defects);set('pt-price',edit.price);set('pt-loc',edit.loc);set('pt-barcode',edit.barcode);$('#pt-qty').value=edit.qtyStock||1;$('#pt-cat').value=edit.cat||'Двигун';$('#pt-cond').value=edit.cond||'Б/в відмінний';ptType=edit.type||'unique';if(edit.donorId)$('#pt-donor').value=edit.donorId;formPhoto.pt=undefined;formThumb.pt=undefined;loadFormPhoto('pt','parts',edit);}
+  else{['pt-name','pt-win','pt-def','pt-price','pt-barcode'].forEach(i=>set(i,''));$('#pt-loc').value=(prefill&&prefill.loc)||'';$('#pt-qty').value='1';ptType='unique';if(lastDonor)$('#pt-donor').value=lastDonor;formPhoto.pt=null;formThumb.pt=null;formMedia.pt=[];setPhotoZone('pt',null);renderMediaStrip('pt');}
+  $$('#pt-type button').forEach(x=>x.classList.toggle('on',x.dataset.t===ptType));$('#pt-donorWrap').style.display=ptType==='unique'?'':'none';$('#pt-qtyWrap').style.display=ptType==='universal'?'':'none';$('#mPart').classList.add('on');setTimeout(()=>$('#pt-name').focus(),80);}
+$('#pt-save').addEventListener('click',()=>{const name=$('#pt-name').value.trim();if(!name){$('#pt-name').focus();return;}
+  const data={name,donorId:ptType==='unique'?$('#pt-donor').value:null,cat:$('#pt-cat').value,winCode:$('#pt-win').value.trim(),cond:$('#pt-cond').value,defects:$('#pt-def').value.trim(),price:+$('#pt-price').value||0,loc:$('#pt-loc').value.trim()||'—',type:ptType,loadedBy:$('#pt-loader').value,barcode:$('#pt-barcode').value.trim()};
+  if(ptType==='universal')data.qtyStock=+$('#pt-qty').value||0;else data.qtyStock=null;
+  if(formPhoto.pt!==undefined){data.photo=formPhoto.pt;data.thumb=formThumb.pt;}
+  data.media=formMedia.pt||[];
+  if(ptEditId){const p=S.parts.find(x=>x.id===ptEditId);
+    if(p){if(data.photo!==undefined){p.photo=data.photo;p.thumb=data.thumb;p.hasPhoto=!!data.photo;}p.media=data.media;p.hasMedia=!!data.media.length;}
+    DB.updatePart(ptEditId,data);}
+  else{const p={id:uid('p'),...data,hasPhoto:!!data.photo,hasMedia:!!data.media.length};lastDonor=$('#pt-donor').value;lastWorker=$('#pt-loader').value;DB.createPart(p);}
+  $('#mPart').classList.remove('on');});
+
+let dnEditId=null;
+function updateDnCost(){const c=((+$('#dn-buy').value||0)+(+$('#dn-ship').value||0))*(+$('#dn-rate').value||0);$('#dn-cost').value=money(c)+' ₴';}
+['dn-buy','dn-ship','dn-rate'].forEach(id=>$('#'+id).addEventListener('input',updateDnCost));
+function openDonor(edit){dnEditId=edit?edit.id:null;$('#mDonor h2').textContent=edit?'Редагувати донора':'Новий донор';$('#dn-save').textContent=edit?'Зберегти зміни':'Зберегти';
+  const set=(id,v)=>$('#'+id).value=(v===undefined||v===null)?'':v;
+  const map={'dn-make':'make','dn-model':'model','dn-year':'year','dn-vin':'vin','dn-trim':'trim','dn-engine':'engine','dn-color':'color','dn-lot':'lot','dn-date':'buyDate','dn-buy':'buy','dn-ship':'ship'};
+  if(edit){Object.entries(map).forEach(([i,k])=>set(i,edit[k]));$('#dn-rate').value=edit.rate||41;$('#dn-gearbox').value=edit.gearbox||'Автомат';$('#dn-auction').value=edit.auction||'Copart';$('#dn-status').value=edit.status||'Розібрано';formPhoto.dn=undefined;formThumb.dn=undefined;loadFormPhoto('dn','donors',edit);}
+  else{Object.keys(map).forEach(i=>set(i,''));$('#dn-rate').value='41';$('#dn-gearbox').value='Автомат';$('#dn-auction').value='Copart';$('#dn-status').value='Розібрано';formPhoto.dn=null;formThumb.dn=null;formMedia.dn=[];setPhotoZone('dn',null);renderMediaStrip('dn');}
+  updateDnCost();$('#mDonor').classList.add('on');setTimeout(()=>$('#dn-make').focus(),80);}
+$('#dn-save').addEventListener('click',()=>{const make=$('#dn-make').value.trim();if(!make){$('#dn-make').focus();return;}
+  const data={make,model:$('#dn-model').value.trim(),year:+$('#dn-year').value||null,vin:$('#dn-vin').value.trim(),trim:$('#dn-trim').value.trim(),engine:$('#dn-engine').value.trim(),gearbox:$('#dn-gearbox').value,color:$('#dn-color').value.trim(),auction:$('#dn-auction').value,lot:$('#dn-lot').value.trim(),buyDate:$('#dn-date').value,buy:+$('#dn-buy').value||0,ship:+$('#dn-ship').value||0,rate:+$('#dn-rate').value||0,status:$('#dn-status').value};
+  if(formPhoto.dn!==undefined){data.photo=formPhoto.dn;data.thumb=formThumb.dn;}
+  data.media=formMedia.dn||[];
+  if(dnEditId){const x=S.donors.find(y=>y.id===dnEditId);
+    if(x){if(data.photo!==undefined){x.photo=data.photo;x.thumb=data.thumb;x.hasPhoto=!!data.photo;}x.media=data.media;x.hasMedia=!!data.media.length;}
+    DB.updateDonor(dnEditId,data);}
+  else{DB.createDonor({id:uid('d'),...data,hasPhoto:!!data.photo,hasMedia:!!data.media.length});}
+  $('#mDonor').classList.remove('on');});
+
+$('#addBtn').addEventListener('click',()=>{const act=$('#addBtn').dataset.act;
+  if(act==='donor')openDonor();
+  else if(act==='task')$('#newTaskBtn').click();
+  else if(act==='order')openOrder();
+  else openPart();});
+
+let obPos=[],obPay='full',obPoint='Відділення',obTtn='',obEditId=null,obDiscType='uah';
+$('#newOrderBtn').addEventListener('click',()=>openOrder());
+function openOrder(prefill,edit){obEditId=edit?edit.id:null;obPos=[];obTtn=edit?(edit.ttn||''):'';obPay=edit?(edit.pay||'full'):'full';obPoint=edit?(edit.point||'Відділення'):'Відділення';obDiscType=edit?(edit.discountType||'uah'):'uah';
+  fillDonors($('#ob-donor'),true);fillWorkers($('#ob-seller'),edit?edit.seller:lastWorker);
+  $('#mOrder h2').textContent=edit?('Замовлення #'+edit.num):'Нове замовлення';$('#ob-save').textContent=edit?'Зберегти зміни':'Створити замовлення';
+  const set=(id,v)=>$('#'+id).value=(v===undefined||v===null)?'':v;
+  if(edit){set('ob-client',edit.client);set('ob-phone',edit.phone);set('ob-city',edit.city);set('ob-branch',edit.branch);set('ob-comment',edit.comment);set('ob-prepay',edit.prepay);set('ob-search','');set('ob-deliveryOther',edit.deliveryOther);$('#ob-delivery').value=edit.delivery||'Нова Пошта';$('#ob-disc').value=edit.discount||'';obPos=(edit.positions||[]).map(p=>({...p}));$('#ob-ttnTxt').textContent=edit.ttn?('ТТН '+edit.ttn):'Згенерувати ТТН';}
+  else{['ob-client','ob-phone','ob-city','ob-branch','ob-comment','ob-search','ob-prepay','ob-deliveryOther','ob-disc'].forEach(id=>set(id,''));$('#ob-delivery').value='Нова Пошта';$('#ob-ttnTxt').textContent='Згенерувати ТТН';if(prefill&&prefill.partId){const p=S.parts.find(x=>x.id===prefill.partId);if(p)obPos.push({partId:p.id,qty:1,price:p.price});}}
+  $$('#ob-pay button').forEach(x=>x.classList.toggle('on',x.dataset.p===obPay));$$('#ob-point button').forEach(x=>x.classList.toggle('on',x.dataset.v===obPoint));$$('#ob-discType button').forEach(x=>x.classList.toggle('on',x.dataset.v===obDiscType));
+  $('#ob-prepayWrap').style.display=obPay==='cod'?'':'none';$('#ob-branchLbl').textContent=obPoint==='Поштомат'?'№ поштомата':'№ відділення';$('#ob-deliveryOtherWrap').style.display=$('#ob-delivery').value==='Інша'?'':'none';
+  renderPick();renderPos();$('#mOrder').classList.add('on');}
+$('#ob-delivery').addEventListener('change',()=>{$('#ob-deliveryOtherWrap').style.display=$('#ob-delivery').value==='Інша'?'':'none';});
+$('#ob-donor').addEventListener('change',renderPick);
+$('#ob-search').addEventListener('input',renderPick);
+function renderPick(){const d=derive();const df=$('#ob-donor').value,sq=$('#ob-search').value.trim().toLowerCase();
+  const list=S.parts.filter(p=>{const st=partState(p,d);if(!st.universal&&st.sold)return false;if(st.universal&&st.remaining<=0)return false;if(df&&p.donorId!==df)return false;if(sq&&!p.name.toLowerCase().includes(sq))return false;return true;});
+  $('#ob-picklist').innerHTML=list.length?list.map(p=>`<div class="pick" data-id="${p.id}"><div><div style="font-weight:600">${p.name}</div><div style="font-size:11.5px;color:var(--muted)">${p.donorId?donorName(p.donorId):'Універсальна'} · ${p.loc}</div></div><div class="pp">${money(p.price)} ₴</div></div>`).join(''):`<div class="empty" style="padding:18px">Нема доступних деталей</div>`;
+  $$('#ob-picklist .pick').forEach(el=>el.addEventListener('click',()=>{const id=el.dataset.id;const ex=obPos.find(x=>x.partId===id);if(ex){ex.qty++;}else{const p=S.parts.find(x=>x.id===id);obPos.push({partId:id,qty:1,price:p.price});}renderPos();}));}
+function renderPos(){const box=$('#ob-positions');if(!obPos.length){box.innerHTML='<div class="empty" style="padding:20px">Ще нема позицій. Обери деталь зі списку зліва.</div>';$('#ob-totalBox').style.display='none';return;}
+  box.innerHTML=obPos.map((pos,i)=>{const p=S.parts.find(x=>x.id===pos.partId);const line=pos.qty*pos.price;const dsc=Math.min(line,+pos.disc||0);
+    return`<div class="pos"><div class="plines"><div style="font-weight:600">${p?p.name:'—'}</div><div style="font-size:11.5px;color:var(--muted)">${money(pos.price)} ₴/шт · разом ${money(line-dsc)} ₴</div>${dsc>0?`<div class="posdisc">знижка −${money(dsc)} ₴</div>`:''}</div><input class="qn" type="number" min="1" value="${pos.qty}" data-i="${i}" title="Кількість"><input class="dn" type="number" min="0" value="${pos.disc||''}" data-d="${i}" placeholder="знижка ₴" title="Знижка на позицію, ₴"><div class="x" data-i="${i}">✕</div></div>`;}).join('');
+  const tmp={positions:obPos,discount:+$('#ob-disc').value||0,discountType:obDiscType};
+  const gross=orderGross(tmp),pd=orderPosDisc(tmp),od=orderDiscAmt(tmp);
+  $('#ob-gross').textContent=money(gross)+' ₴';
+  $('#ob-posDiscLine').style.display=pd>0?'flex':'none';$('#ob-posDisc').textContent='−'+money(pd)+' ₴';
+  $('#ob-ordDiscLine').style.display=od>0?'flex':'none';$('#ob-ordDisc').textContent='−'+money(od)+' ₴';
+  $('#ob-sum').textContent=money(orderTotal(tmp))+' ₴';
+  $('#ob-totalBox').style.display='';
+  box.querySelectorAll('.qn').forEach(inp=>inp.addEventListener('input',e=>{obPos[+e.target.dataset.i].qty=Math.max(1,+e.target.value||1);renderPos();}));
+  box.querySelectorAll('.dn').forEach(inp=>inp.addEventListener('input',e=>{obPos[+e.target.dataset.d].disc=Math.max(0,+e.target.value||0);renderPos();}));
+  box.querySelectorAll('.x').forEach(b=>b.addEventListener('click',e=>{obPos.splice(+e.target.dataset.i,1);renderPos();}));}
+$('#ob-disc').addEventListener('input',()=>renderPos());
+$('#ob-discType').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;obDiscType=b.dataset.v;$$('#ob-discType button').forEach(x=>x.classList.toggle('on',x===b));renderPos();});
+$('#ob-pay').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;obPay=b.dataset.p;$$('#ob-pay button').forEach(x=>x.classList.toggle('on',x===b));$('#ob-prepayWrap').style.display=obPay==='cod'?'':'none';});
+$('#ob-point').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;obPoint=b.dataset.v;$$('#ob-point button').forEach(x=>x.classList.toggle('on',x===b));$('#ob-branchLbl').textContent=obPoint==='Поштомат'?'№ поштомата':'№ відділення';});
+$('#ob-ttn').addEventListener('click',()=>{obTtn='20'+Date.now().toString().slice(-12);$('#ob-ttnTxt').textContent='ТТН '+obTtn;});
+$('#ob-save').addEventListener('click',()=>{if(!obPos.length){alert('Додай хоча б одну позицію');return;}
+  const f={client:$('#ob-client').value.trim(),phone:$('#ob-phone').value.trim(),city:$('#ob-city').value.trim(),point:obPoint,branch:$('#ob-branch').value.trim(),delivery:$('#ob-delivery').value,deliveryOther:$('#ob-deliveryOther').value.trim(),pay:obPay,prepay:+$('#ob-prepay').value||0,discount:+$('#ob-disc').value||0,discountType:obDiscType,seller:$('#ob-seller').value,comment:$('#ob-comment').value.trim(),ttn:obTtn,positions:obPos.map(p=>({...p}))};
+  $('#mOrder').classList.remove('on');
+  if(obEditId){DB.updateOrder(obEditId,f);go('orders');}
+  else{DB.createOrder({id:uid('o'),date:new Date().toISOString(),tracking:'Новий',...f}).then(()=>go('orders'));}});
+
+let lastDonor='',lastWorker='',camScanner=null,fieldScanner=null;
+
+/* сканер прямо в полі форми (місце зберігання / штрихкод) */
+function scanIntoField(inputId){
+  const inp=$('#'+inputId);if(!inp)return;
+  if(!window.Html5Qrcode){
+    const v=prompt('Камера-сканер недоступний. Введи код вручну або скануй USB-сканером:',inp.value||'');
+    if(v!==null)inp.value=v.trim();
+    return;
+  }
+  let ov=document.getElementById('fieldScanOv');
+  if(!ov){
+    ov=document.createElement('div');ov.id='fieldScanOv';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(10,12,16,.92);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px';
+    ov.innerHTML='<div id="fieldReader" style="width:min(92vw,380px);border-radius:14px;overflow:hidden"></div><div style="color:#cfd6e2;font-size:14px;text-align:center">Наведи камеру на штрихкод або QR</div><button class="btn" id="fieldScanClose">Закрити</button>';
+    document.body.appendChild(ov);
+    document.getElementById('fieldScanClose').addEventListener('click',stopFieldScan);
+  }
+  ov.style.display='flex';
+  fieldScanner=new Html5Qrcode('fieldReader');
+  fieldScanner.start({facingMode:'environment'},{fps:10,qrbox:220},txt=>{
+    inp.value=txt;stopFieldScan();
+  }).catch(err=>{alert('Не вдалося увімкнути камеру: '+err);stopFieldScan();});
+}
+function stopFieldScan(){
+  const ov=document.getElementById('fieldScanOv');
+  const done=()=>{if(ov)ov.style.display='none';const r=document.getElementById('fieldReader');if(r)r.innerHTML='';fieldScanner=null;};
+  if(fieldScanner){fieldScanner.stop().then(done).catch(done);}else done();
+}
+if($('#pt-locScan'))$('#pt-locScan').addEventListener('click',()=>scanIntoField('pt-loc'));
+if($('#pt-barScan'))$('#pt-barScan').addEventListener('click',()=>scanIntoField('pt-barcode'));
+
+$('#scanCode').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=e.target.value.trim();if(v){openPart({loc:v});e.target.value='';}}});
+$('#camBtn').addEventListener('click',async()=>{
+  if(!window.Html5Qrcode){alert('Камера-сканер не завантажився. Використай USB-сканер або введення вручну.');return;}
+  if(camScanner){try{await camScanner.stop()}catch(e){}camScanner=null;$('#reader').innerHTML='';return;}
+  try{camScanner=new Html5Qrcode('reader');await camScanner.start({facingMode:'environment'},{fps:10,qrbox:220},txt=>{openPart({loc:txt});camScanner.stop().then(()=>{$('#reader').innerHTML='';camScanner=null;});});}
+  catch(err){alert('Не вдалося увімкнути камеру: '+err);camScanner=null;}
+});
+
+$('#addWorkerBtn').addEventListener('click',()=>{const name=prompt("Ім'я працівника:");if(name&&name.trim()){DB.createWorker({id:uid('w'),name:name.trim()});}});
+$('#newTaskBtn').addEventListener('click',()=>{fillWorkers($('#tk-worker'),'');$('#tk-title-inp').value='';$('#tk-due').value='';$('#tk-note').value='';$('#mTask').classList.add('on');setTimeout(()=>$('#tk-title-inp').focus(),80);});
+$('#tk-save').addEventListener('click',()=>{const title=$('#tk-title-inp').value.trim();if(!title){$('#tk-title-inp').focus();return;}DB.createTask({id:uid('t'),title,worker:$('#tk-worker').value,status:'Нове',due:$('#tk-due').value,note:$('#tk-note').value.trim(),created:new Date().toISOString()});$('#mTask').classList.remove('on');});
+$('#payMonth').addEventListener('change',renderPay);
+
+$('#gearBtn').addEventListener('click',()=>$('#mSettings').classList.add('on'));
+function applySettings(){document.body.dataset.theme=S.settings.theme;document.body.dataset.accent=S.settings.accent;document.body.dataset.bg=S.settings.bg;
+  $$('#set-theme button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.settings.theme));
+  $$('#set-bg button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.settings.bg));
+  $$('#set-accent .swatch').forEach(b=>b.classList.toggle('on',b.dataset.v===S.settings.accent));}
+$('#set-theme').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.settings.theme=b.dataset.v;saveSettings();applySettings();});
+$('#set-bg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.settings.bg=b.dataset.v;saveSettings();applySettings();});
+$('#set-accent').addEventListener('click',e=>{const b=e.target.closest('.swatch');if(!b)return;S.settings.accent=b.dataset.v;saveSettings();applySettings();});
+
+/* PART DRAWER — панелька деталі */
+const drawer=$('#drawer'),drawerOv=$('#drawerOv');
+function showDrawer(){drawer.classList.add('on');drawerOv.classList.add('on');}
+function closeDrawer(){drawer.classList.remove('on');drawerOv.classList.remove('on');}
+drawerOv.addEventListener('click',closeDrawer);
+$('#dw-close').addEventListener('click',closeDrawer);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer();});
+function openPartDrawer(id){
+  const p=S.parts.find(x=>x.id===id);if(!p)return;
+  const d=derive(),st=partState(p,d);
+  const avail=st.universal?st.remaining>0:!st.sold;
+  const status=st.universal?(st.remaining>0?`В наявності · ×${st.remaining}`:'Немає в наявності'):(st.sold?'Продано':'В наявності');
+  const icon=CAT_ICON[p.cat]||CAT_ICON.default;
+  const inOrders=S.orders.filter(o=>o.tracking!=='Повернено'&&(o.positions||[]).some(x=>x.partId===id));
+  const sales=inOrders.map(o=>'#'+o.num).join(', ');
+  const saleDate=inOrders.length?fmtDT(inOrders.map(o=>o.date).sort()[0]):'';
+  const row=(k,v)=>v?`<div class="drow"><span class="k">${k}</span><span class="v">${v}</span></div>`:'';
+  $('#dw-title').textContent=p.name;
+  $('#dw-body').innerHTML=`
+    <div class="dphoto" id="dw-photo"><svg viewBox="0 0 24 24" fill="none" stroke="#a9afb8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="width:56px;height:56px"><path d="${icon}"/></svg></div>
+    <div id="dw-media"></div>
+    <div class="drow"><span class="k">Донор</span><span class="v">${p.donorId?donorName(p.donorId):'Універсальна'}</span></div>
+    <div class="drow"><span class="k">Категорія</span><span class="v">${p.cat}</span></div>
+    ${row('Win-Code',p.winCode)}
+    <div class="drow"><span class="k">Стан</span><span class="v">${p.cond}</span></div>
+    ${row('Дефекти',p.defects)}
+    ${st.universal?`<div class="drow"><span class="k">Кількість</span><span class="v">×${st.remaining}</span></div>`:''}
+    <div class="drow"><span class="k">Ціна продажу</span><span class="v">${money(p.price)} ₴</span></div>
+    <div class="drow"><span class="k">Місце</span><span class="v" style="font-family:var(--mono)">${p.loc}</span></div>
+    ${p.barcode?`<div class="drow"><span class="k">Barcode</span><span class="v" style="font-family:var(--mono)">${p.barcode}</span></div>`:''}
+    <div class="drow"><span class="k">Статус</span><span class="v">${status}</span></div>
+    ${row('Дата продажу',saleDate)}${row('Продажі',sales)}
+    <div class="drow" style="border:0"><span class="k">Хто завантажив</span><span class="v">${workerName(p.loadedBy)}</span></div>`;
+  $('#dw-actions').innerHTML=`
+    <button class="btn primary full" id="dw-order" ${avail?'':'disabled'}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Додати до замовлення</button>
+    <button class="btn full" id="dw-edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Редагувати</button>
+    <button class="btn full danger" id="dw-del">Видалити деталь</button>`;
+  const ob=$('#dw-order');if(ob&&avail)ob.onclick=()=>{closeDrawer();openOrder({partId:id});};
+  $('#dw-edit').onclick=()=>{closeDrawer();openPart(null,p);};
+  $('#dw-del').onclick=()=>{if(confirm('Видалити цю деталь?')){DB.deletePart(id);closeDrawer();}};
+  if(p.photo)setDrawerPhoto(p.photo); else if(p.thumb)setDrawerPhoto(p.thumb);
+  if(Array.isArray(p.media))drawerMedia(p.media);
+  if((p.hasPhoto&&!p.photo)||(p.hasMedia&&!Array.isArray(p.media))){
+    DB.getOne('parts',id).then(f=>{if(!f)return;
+      if(f.photo){p.photo=f.photo;setDrawerPhoto(f.photo);}
+      if(Array.isArray(f.media)){p.media=f.media;drawerMedia(f.media);}}).catch(()=>{});}
+  showDrawer();
+}
+function openDonorDrawer(id){
+  const x=S.donors.find(y=>y.id===id);if(!x)return;
+  const dd=derive(),cost=donorCost(x),sold=dd.byDonor[id]||0,profit=sold-cost;
+  const cnt=S.parts.filter(p=>p.donorId===id).length;
+  const row=(k,v)=>v?`<div class="drow"><span class="k">${k}</span><span class="v">${v}</span></div>`:'';
+  $('#dw-title').textContent=`${x.make} ${x.model} ${x.year||''}`.trim();
+  $('#dw-body').innerHTML=`
+    <div class="dphoto" id="dw-photo"><svg viewBox="0 0 24 24" fill="none" stroke="#a9afb8" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="width:56px;height:56px"><path d="M19 17h2l.6-2.5a6 6 0 0 0-.4-4.3l-1.4-2.9A3 3 0 0 0 16.8 5H7.2a3 3 0 0 0-2.7 1.7L3.2 9.4a6 6 0 0 0-.4 5L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+    <div id="dw-media"></div>
+    ${row('VIN',x.vin?'<span style="font-family:var(--mono)">'+x.vin+'</span>':'')}
+    ${row('Комплектація',x.trim)}${row('Двигун',x.engine)}${row('КПП',x.gearbox)}${row('Колір',x.color)}
+    ${row('Аукціон',x.auction)}${row('Номер лоту',x.lot)}${row('Дата покупки',x.buyDate?x.buyDate.split('-').reverse().join('.'):'')}${row('Статус',x.status)}
+    <div class="drow"><span class="k">Ціна покупки</span><span class="v">$${money(x.buy)}</span></div>
+    <div class="drow"><span class="k">Доставка+мито</span><span class="v">$${money(x.ship)}</span></div>
+    <div class="drow"><span class="k">Курс</span><span class="v">${x.rate||0} ₴/$</span></div>
+    <div class="drow"><span class="k">Собівартість</span><span class="v" style="font-weight:700">${money(cost)} ₴</span></div>
+    <div class="drow"><span class="k">Деталей на складі</span><span class="v">${cnt}</span></div>
+    <div class="drow"><span class="k">Продано на</span><span class="v">${money(sold)} ₴</span></div>
+    <div class="drow" style="border:0"><span class="k">Прибуток</span><span class="v" style="color:${profit<0?'var(--red)':'var(--green)'};font-weight:700">${profit<0?'−':''}${money(Math.abs(profit))} ₴</span></div>`;
+  $('#dw-actions').innerHTML=`
+    <button class="btn primary full" id="dw-addpart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>Додати деталь із цього авто</button>
+    <button class="btn full" id="dw-dedit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Редагувати донора</button>
+    <button class="btn full danger" id="dw-ddel">Видалити донора</button>`;
+  $('#dw-addpart').onclick=()=>{closeDrawer();lastDonor=id;openPart({});};
+  $('#dw-dedit').onclick=()=>{closeDrawer();openDonor(x);};
+  $('#dw-ddel').onclick=()=>{if(confirm('Видалити донора? Деталі лишаться на складі.')){DB.deleteDonor(id);closeDrawer();}};
+  if(x.photo)setDrawerPhoto(x.photo); else if(x.thumb)setDrawerPhoto(x.thumb);
+  if(Array.isArray(x.media))drawerMedia(x.media);
+  if((x.hasPhoto&&!x.photo)||(x.hasMedia&&!Array.isArray(x.media))){
+    DB.getOne('donors',id).then(f=>{if(!f)return;
+      if(f.photo){x.photo=f.photo;setDrawerPhoto(f.photo);}
+      if(Array.isArray(f.media)){x.media=f.media;drawerMedia(f.media);}}).catch(()=>{});}
+  showDrawer();
+}
+
+/* MOBILE TAB BAR */
+const MAIN_TABS=['dash','parts','donors','orders'];
+function syncTab(v){
+  $$('.tabbar a').forEach(a=>a.classList.remove('on'));
+  const key=MAIN_TABS.includes(v)?v:'more';
+  const t=$('#tabbar [data-tab="'+key+'"]');if(t)t.classList.add('on');
+}
+$('#tabbar').addEventListener('click',e=>{
+  const a=e.target.closest('a');if(!a)return;
+  e.preventDefault();e.stopPropagation();
+  const v=a.dataset.tab;
+  if(v==='more'){
+    const mp=$('#morePanel');const willOpen=!mp.classList.contains('on');
+    mp.classList.toggle('on',willOpen);
+    $$('.tabbar a').forEach(x=>x.classList.remove('on'));
+    if(willOpen)a.classList.add('on');else syncTab(currentView());
+    return;
+  }
+  go(v);
+});
+$('#morePanel').addEventListener('click',e=>{
+  const a=e.target.closest('a');if(!a)return;
+  e.preventDefault();e.stopPropagation();
+  go(a.dataset.tab);
+});
+function currentView(){const s=document.querySelector('.view.on');return s?s.id.replace('view-',''):'dash';}
+document.addEventListener('click',e=>{
+  const mp=$('#morePanel');
+  if(mp&&mp.classList.contains('on')&&!mp.contains(e.target)&&!$('#moreTab').contains(e.target)){
+    mp.classList.remove('on');syncTab(currentView());
+  }
+});
+
+/* логотип: якщо файл не залито поруч з index.html — показуємо текстовий бренд */
+function logoFallback(img){
+  img.style.display='none';
+  const b=img.parentElement;
+  if(b&&!b.querySelector('.txtlogo')){
+    const d=document.createElement('div');d.className='txtlogo';
+    d.style.cssText='background:#fff;border-radius:12px;padding:12px 13px;text-align:center';
+    d.innerHTML='<div style="font-weight:900;font-size:16px;color:#16305c;line-height:1.1">COPART<br><span style="color:#c8102e">GARAGE</span></div>';
+    b.insertBefore(d,b.firstChild);
+  }
+}
+window.logoFallback=logoFallback;
+
+/* PWA */
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+
+/* INIT */
+$('#payMonth').value=thisMonth();
+applySettings();
+const _c=cacheLoad();if(_c){S.workers=_c.workers||[];S.donors=_c.donors||[];S.parts=_c.parts||[];S.orders=_c.orders||[];S.tasks=_c.tasks||[];}
+renderAll();
+syncTab('dash');
+if(window.matchMedia('(max-width:680px)').matches){const ml=$('#mLogo');if(ml)ml.style.display='block';}
+bnr('load','Завантаження даних із сервера…');
+DB.load().then(()=>{bnrHide();$('#modeTxt').textContent='Дані на сервері';renderAll();}).catch(err=>{bnr('err','Сервер недоступний ('+err.message+'). Показано останні збережені дані.');});
+</script>
+
+<!-- ── MOBILE TAB BAR ── -->
+<nav class="tabbar" id="tabbar">
+  <a data-tab="dash" class="on">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+    Огляд
+  </a>
+  <a data-tab="parts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
+    Деталі
+  </a>
+  <a data-tab="donors">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 17h2l.64-2.54a6 6 0 00-.42-4.36l-1.35-2.87A3 3 0 0016.79 5H7.21a3 3 0 00-2.68 1.66L3.18 9.4A6 6 0 002.76 14.4L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+    Донори
+  </a>
+  <a data-tab="orders">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    Замовлення
+  </a>
+  <a data-tab="more" id="moreTab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+    Ще
+  </a>
+</nav>
+<div class="more-panel" id="morePanel">
+  <a data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg>Сканер</a>
+  <a data-tab="pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="7" cy="15" r="1"/></svg>Розрахунок ЗП</a>
+  <a data-tab="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Завдання</a>
+</div>
+</body>
+</html>
