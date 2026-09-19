@@ -562,7 +562,7 @@
   <div class="fld"><label>Назва</label><input id="pt-name" placeholder="Напр. Фара ліва"></div>
   <div class="fld"><label>Тип обліку</label><div class="seg" id="pt-type"><button data-t="unique" class="on">Унікальна (з авто)</button><button data-t="universal">Універсальна</button></div></div>
   <div class="fld" id="pt-donorWrap"><label>Донор</label><select id="pt-donor"></select></div>
-  <div class="row2"><div class="fld"><label>Категорія</label><select id="pt-cat"></select></div><div class="fld"><label>Win-Code / OEM</label><input id="pt-win" placeholder="каталожний №"></div></div>
+  <div class="row2"><div class="fld"><label>Категорія</label><select id="pt-cat"></select></div><div class="fld"><label>Win-Code / OEM</label><div class="inpbtn"><input id="pt-win" placeholder="каталожний №"><div class="ib" id="pt-winGen" title="Згенерувати Win-Code автоматично"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div></div></div></div>
   <div class="fld" id="pt-qtyWrap" style="display:none"><label>Кількість на складі</label><input id="pt-qty" type="number" value="1"></div>
   <div class="row2"><div class="fld"><label>Стан</label><select id="pt-cond"><option>Новий</option><option selected>Б/в відмінний</option><option>Робочий</option><option>Під відновлення</option></select></div><div class="fld"><label>Місце зберігання</label><div class="inpbtn"><input id="pt-loc" placeholder="A-01"><div class="ib" id="pt-locScan" title="Сканувати місце"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg></div></div></div></div>
   <div class="fld"><label>Дефекти</label><textarea id="pt-def" placeholder="опис дефектів…"></textarea></div>
@@ -653,6 +653,35 @@
   <div class="fld"><label>Нотатка</label><textarea id="tk-note" placeholder="деталі…"></textarea></div>
   <div class="mact"><button class="btn" data-close>Скасувати</button><button class="btn primary" id="tk-save">Зберегти</button></div>
 </div></div>
+
+<!-- ── MOBILE TAB BAR ── -->
+<nav class="tabbar" id="tabbar">
+  <a data-tab="dash" class="on">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+    Огляд
+  </a>
+  <a data-tab="parts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
+    Деталі
+  </a>
+  <a data-tab="donors">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 17h2l.64-2.54a6 6 0 00-.42-4.36l-1.35-2.87A3 3 0 0016.79 5H7.21a3 3 0 00-2.68 1.66L3.18 9.4A6 6 0 002.76 14.4L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+    Донори
+  </a>
+  <a data-tab="orders">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    Замовлення
+  </a>
+  <a data-tab="more" id="moreTab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+    Ще
+  </a>
+</nav>
+<div class="more-panel" id="morePanel">
+  <a data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg>Сканер</a>
+  <a data-tab="pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="7" cy="15" r="1"/></svg>Розрахунок ЗП</a>
+  <a data-tab="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Завдання</a>
+</div>
 
 <script>
 /* ============================================================
@@ -1195,6 +1224,36 @@ function stopFieldScan(){
 if($('#pt-locScan'))$('#pt-locScan').addEventListener('click',()=>scanIntoField('pt-loc'));
 if($('#pt-barScan'))$('#pt-barScan').addEventListener('click',()=>scanIntoField('pt-barcode'));
 
+/* ── Win-Code: авто-генерація ── */
+function genWinCode(){
+  const donorId=$('#pt-donor').value;
+  const cat=$('#pt-cat').value||'XX';
+  // абревіатура з донора (перші літери марки+моделі) або UNI
+  const donor=donorId?S.donors.find(x=>x.id===donorId):null;
+  let prefix='UNI';
+  if(donor){
+    const make=(donor.make||'').replace(/\s+/g,'').slice(0,2).toUpperCase();
+    const model=(donor.model||'').replace(/\s+/g,'').slice(0,2).toUpperCase();
+    const year=String(donor.year||'').slice(-2);
+    prefix=make+model+year;
+  }
+  // абревіатура категорії
+  const catCode={
+    'Двигун':'ENG','КПП':'GBX','Оптика':'OPT','Кузов':'BDY',
+    'Електрика':'ELC','Підвіска':'SUS','Салон':'INT','Гальма':'BRK','Інше':'OTH'
+  }[cat]||cat.slice(0,3).toUpperCase();
+  // порядковий №: кількість деталей тієї ж категорії+донора + 1
+  const seq=S.parts.filter(p=>p.cat===cat&&(!donorId||p.donorId===donorId)).length+1;
+  return `${prefix}-${catCode}-${String(seq).padStart(3,'0')}`;
+}
+if($('#pt-winGen'))$('#pt-winGen').addEventListener('click',()=>{
+  const code=genWinCode();$('#pt-win').value=code;
+  $('#pt-win').style.color='var(--green)';
+  setTimeout(()=>{$('#pt-win').style.color='';},1200);
+});
+// оновлювати при зміні донора або категорії, якщо поле порожнє
+['pt-donor','pt-cat'].forEach(id=>{const el=$('#'+id);if(el)el.addEventListener('change',()=>{if(!$('#pt-win').value)$('#pt-win').value=genWinCode();});});
+
 $('#scanCode').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=e.target.value.trim();if(v){openPart({loc:v});e.target.value='';}}});
 $('#camBtn').addEventListener('click',async()=>{
   if(!window.Html5Qrcode){alert('Камера-сканер не завантажився. Використай USB-сканер або введення вручну.');return;}
@@ -1360,33 +1419,5 @@ bnr('load','Завантаження даних із сервера…');
 DB.load().then(()=>{bnrHide();$('#modeTxt').textContent='Дані на сервері';renderAll();}).catch(err=>{bnr('err','Сервер недоступний ('+err.message+'). Показано останні збережені дані.');});
 </script>
 
-<!-- ── MOBILE TAB BAR ── -->
-<nav class="tabbar" id="tabbar">
-  <a data-tab="dash" class="on">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-    Огляд
-  </a>
-  <a data-tab="parts">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
-    Деталі
-  </a>
-  <a data-tab="donors">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 17h2l.64-2.54a6 6 0 00-.42-4.36l-1.35-2.87A3 3 0 0016.79 5H7.21a3 3 0 00-2.68 1.66L3.18 9.4A6 6 0 002.76 14.4L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
-    Донори
-  </a>
-  <a data-tab="orders">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-    Замовлення
-  </a>
-  <a data-tab="more" id="moreTab">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
-    Ще
-  </a>
-</nav>
-<div class="more-panel" id="morePanel">
-  <a data-tab="scan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"/><path d="M7 12h10"/></svg>Сканер</a>
-  <a data-tab="pay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="7" cy="15" r="1"/></svg>Розрахунок ЗП</a>
-  <a data-tab="tasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Завдання</a>
-</div>
 </body>
 </html>
